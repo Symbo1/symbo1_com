@@ -1,0 +1,176 @@
+---
+layout: page
+title: Members
+permalink: /members/
+---
+
+<style>
+    body {
+        color: white;
+    }
+
+    #container {
+        padding: .1em 1.5em 1em 1em;
+    }
+
+    #container output {
+        clear: both;
+        width: 100%;
+    }
+
+    #container output h3 {
+        margin: 0;
+    }
+
+    #container output pre {
+        margin: 0;
+    }
+
+    .input-line {
+        display: -webkit-box;
+        -webkit-box-orient: horizontal;
+        -webkit-box-align: stretch;
+        display: -moz-box;
+        -moz-box-orient: horizontal;
+        -moz-box-align: stretch;
+        display: box;
+        box-orient: horizontal;
+        box-align: stretch;
+        clear: both;
+    }
+
+    .input-line > div:nth-child(2) {
+        -webkit-box-flex: 1;
+        -moz-box-flex: 1;
+        box-flex: 1;
+    }
+
+    .prompt {
+        white-space: nowrap;
+        color: #FF0000;
+        margin-right: 7px;
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-orient: vertical;
+        display: -moz-box;
+        -moz-box-pack: center;
+        -moz-box-orient: vertical;
+        display: box;
+        box-pack: center;
+        box-orient: vertical;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    .cmdline {
+        outline: none;
+        background-color: transparent;
+        margin: 0;
+        width: 100%;
+        font: inherit;
+        border: none;
+        color: inherit;
+    }
+
+    .ls-files {
+        height: 45px;
+        -webkit-column-width: 100px;
+        -moz-column-width: 100px;
+        -o-column-width: 100px;
+        column-width: 100px;
+    }
+</style>
+
+<div id="container">
+    <output></output>
+    <div id="input-line" class="input-line">
+        <div class="prompt"></div>
+        <div><input spellcheck="false" class="cmdline" autofocus/></div>
+    </div>
+</div>
+
+<script>
+    var Terminal = Terminal || function (cmdLine, output) {
+        var coreMembers = [{'avfisher':'http://avfisher.win/'},
+                        {'Balis0ng':'http://balis0ng.com/'},
+                        {'CongRong':'https://www.Thinkings.org/'},
+                        {'Cy':'https://hackerone.com/cy95'},
+                        {'L3m0n':'http://iamstudy.cnblogs.com/'},
+                        {'onehackzero':'https://hackerone.com/1hack0'},
+                        {'Phith0n':'https://www.leavesongs.com/'},
+                        {'PwnDog':'http://pwn.dog/'},
+                        {'saltedfish':'https://hackerone.com/saltedfish'},
+                        {'scanf':'https://github.com/scanfsec'},
+                        {'todaro':'https://b.cp0.win/'},
+                        {'Tuis3c':'https://iaq.pw/'},
+                        {'Venenof7':'http://www.venenof.com/'},
+                        {'xia0qi':''},
+                        {'zhchbin':'http://zhchbin.github.io/'}]
+
+        window.addEventListener('click', function (e) {
+            cmdLine.focus();
+        }, false);
+
+        cmdLine.addEventListener('keydown', newCommand, false);
+
+        function newCommand(e) {
+            if (e.keyCode == 13) {
+                var line = this.parentNode.parentNode.cloneNode(true);
+                var input = line.querySelector('input.cmdline');
+                input.autofocus = false;
+                output.appendChild(line);
+
+                if (this.value && this.value.trim()) {
+                    var args = this.value.split(' ').filter(function (val, i) {
+                        return val;
+                    });
+                    var cmd = args[0].toLowerCase();
+
+                    if (cmd === 'sort'){
+                        var teamList = "";
+                        coreMembers.forEach(function(members, index){
+                            for(var name in members){
+                                teamList += "<a style='color:#fff;' target='_blank' href='" + members[name] + "'>" + name + "</a>";
+                                if(index+1 < coreMembers.length){teamList += "、";}
+                            }
+                        })
+                        outputHtml("<div style='color:#fff;word-break:break-word;'>" + teamList + "</div>")
+                    }else if(cmd){
+                        outputHtml('Not a real shell :D');
+                    }
+                }
+                this.value = '';
+            }
+        }
+
+        function outputHtml(html) {
+            output.insertAdjacentHTML('beforeEnd', '<p>' + html + '</p>');
+        }
+
+        return {
+            output: outputHtml
+        }
+    };
+
+    document.querySelector('.prompt').innerHTML = '➜ ';
+    var cmdLine = document.querySelector('#input-line .cmdline');
+    var output = document.querySelector('#container output');
+
+    term = new Terminal(cmdLine, output);
+
+    setTimeout(function () {
+        cmdLine.value = "sort -f coreMembers.txt";
+        setTimeout(function () {
+            cmdLine.value = "sort -f coreMembers.txt | awk '{printf $0\"、\"}'";
+            setTimeout(function () {
+                var evt = document.createEvent('Event');
+                evt.initEvent('keydown');
+                evt.which = evt.keyCode = 13;
+                cmdLine.dispatchEvent(evt);
+                cmdLine.focus();
+            }, 200)
+        }, 100)
+    }, 500)
+
+</script>

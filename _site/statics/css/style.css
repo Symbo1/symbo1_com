@@ -1,0 +1,86 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+	background-color: #282828;
+	color: rgba(255,255,255,0.7);
+	padding: 5px;
+	margin: auto;
+	width: 80%;
+	border: 2px dashed rgba(255,255,255,0.7);
+	font-family: monospace;
+	font-size: 11pt;
+}
+
+header, nav, main, footer {
+	margin: 15px;
+	border-bottom: 2px dashed rgba(255,255,255,0.5);
+}
+
+header, nav {
+	text-align: center;
+}
+
+.ascii {
+	color: rgba(255,255,255,1);
+	font-weight: bold;
+}
+
+.logo {
+	font: 10px/5px monospace;
+}
+
+nav ul {
+	display: block;
+	padding: 0;
+}
+
+nav ul li {
+	display: inline;
+	padding-left: 10px;
+}
+
+nav ul li a {
+	text-decoration: none;
+	color: rgba(255,255,255,1);
+}
+
+nav ul li a:hover {
+	font-weight: bold;
+}
+
+a {
+	text-decoration: none;
+	color: #2A6EA4;
+	font-weight: bold;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+pre {
+	font-family: monospace;
+	overflow-x: auto;
+}
+
+.highlighter-rouge {
+	color: rgba(255,255,255,0.4);
+}
+
+.highlight {
+	color: rgba(255,255,255,0.7);
+	border: 1px dashed rgba(255,255,255,0.3);
+	padding: 15px;
+}
+
+img, main iframe {
+	width: 80%;
+	margin-left: 10%;
+	border: 1px dashed rgba(255,255,255,0.5);
+}
+
+main header {
+	text-align: center;
+	padding-bottom: 15px;
+	border: 0;
+}

