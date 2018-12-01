@@ -3,8 +3,17 @@ layout: default
 title: Archives
 ---
 
+<style>
+	a{
+		color: rgba(255,255,255,0.7);
+	}
+	.artList{
+		margin: 5px;
+	}
+</style>
+
 <ul>
 {% for art in site.categories.articles %}
-<li>{{ art.date | date_to_string }} - <a href="{{ art.url }}">{{ art.title }}</a></li>
+<li class="artList">{{ art.date | date_to_string }} - <a href="{{ art.url }}">{{ art.title }}</a></li>
 {% endfor %}
 </ul>
