@@ -5,6 +5,6 @@ title: Archives
 
 <ul>
 {% for art in site.categories.articles %}
-<li><a href="{{ art.url }}">{{ art.title }}</a></li>
+<li>{{ art.date | date_to_string }} - <a href="{{ art.url }}">{{ art.title }}</a></li>
 {% endfor %}
 </ul>
