@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Osx Apache Code To Disclose -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Tr3jer_CongRong.'s RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Tr3jer_CongRong.'s Atom Feed" href="/atom.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+<link rel="license" type="text/plain" src="/statics/LICENSE">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+		<!-- <li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li> -->
+	</ul>
+</nav>
+
+		<main>
+			<div class="post-content">
+<div id="post">
+<h1 align="center">Osx Apache Code To Disclose</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">01 Jun 2016 - CongRong</p>
+
+<h2 id="漏洞分析">漏洞分析</h2>
+
+<p>   最开始是在本地发现的，在请求文件名中插入BOM头字符会直接返回后端的代码：</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/03235511c2a5182171f420e55a9eef04fdd2ad02.png" /></p>
+
+<p>当时此漏洞的描述是：</p>
+
+<p>   The Apple mod_hfs_apple module for the Apache HTTP Server in Apple Mac OS X before 10.8.3 does not properly handle ignorable Unicode characters, which allows remote attackers to bypass intended directory authentication requirements via a crafted pathname in a URI.</p>
+
+<p>   意思就是运行Apache的Osx服务器上，数据取自HFS+文件系统，HFS+用unicode来命名文件或文件夹。根据HFS+特性，当视图向HFS+请求文件时，接收到的这个文件名中含有可被HFS+忽略掉的unicode序列的话，照常返回这个正常文件名的文件。而作为apache for mac在处理这种请求时，导致请求的文件没有在服务器上执行，也就是将所请求的文件当做普通文件来响应请求。</p>
+
+<p>比如这些空的unicode字符序列都会被HFS+忽略：</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/03235042f97be2f10da2075940c99257a272074d.png" /></p>
+
+<p>再来看看Apple的<a target="_blank" href="https://support.apple.com/zh-cn/HT202694">公告</a>:</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/4fe.png" /></p>
+
+<p>   Apple对这个漏洞的定义只是绕过了HTTP基本认证，过于模棱两可。所以我把这个漏洞的标题定义为”Code To Disclose Vulnerability”。</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/0421155498fc6f652b4f0e6d44d51a3dabfe40ad.png" /></p>
+
+<p>   这个漏洞的描述是说<code class="highlighter-rouge">mod_hfs_apple</code>模块没有正确处理掉这些unicode序列，这个模块的最初意义是用来处理URI请求信息的，比如文件名大小写等等事情，并且是用户自愿启不启用的。所以补丁就打在了<code class="highlighter-rouge">mod_hfs_apple</code>模块：</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="k">static</span> <span class="kt">int</span> <span class="nf">contains_ignorable_sequence</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="kt">size_t</span> <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">len</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="c1">// 2-char sequences
+</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xFC'</span> <span class="o">&amp;&amp;</span> <span class="sc">'\x80'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\x83'</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xF8'</span> <span class="o">&amp;&amp;</span> <span class="sc">'\x80'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\x87'</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xF0'</span> <span class="o">&amp;&amp;</span> <span class="sc">'\x80'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\x8F'</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">len</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="c1">// 3-char sequences
+</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xEF'</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span><span class="sc">'\xBB'</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span><span class="sc">'\xBF'</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xE2'</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span><span class="sc">'\x81'</span> <span class="o">&amp;&amp;</span> <span class="sc">'\xAA'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\xAF'</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'\xE2'</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span><span class="sc">'\x80'</span> <span class="o">&amp;&amp;</span> <span class="p">((</span><span class="sc">'\x8C'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\x8F'</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="sc">'\xAA'</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="sc">'\xAE'</span><span class="p">)))</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">contains_ignorable_sequence</code>函数将这些可被HFS+忽略的unicode序列集中了起来：</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="err">\</span><span class="n">xFC</span><span class="p">[</span><span class="err">\</span><span class="n">x80</span><span class="o">-</span><span class="err">\</span><span class="n">x83</span><span class="p">]</span>
+<span class="err">\</span><span class="n">xF8</span><span class="p">[</span><span class="err">\</span><span class="n">x80</span><span class="o">-</span><span class="err">\</span><span class="n">x87</span><span class="p">]</span>
+<span class="err">\</span><span class="n">xF0</span><span class="p">[</span><span class="err">\</span><span class="n">x80</span><span class="o">-</span><span class="err">\</span><span class="n">x8F</span><span class="p">]</span>
+<span class="err">\</span><span class="n">xEF</span><span class="err">\</span><span class="n">xBB</span><span class="err">\</span><span class="n">xBF</span>
+<span class="err">\</span><span class="n">xE2</span><span class="err">\</span><span class="n">x81</span><span class="p">[</span><span class="err">\</span><span class="n">xAA</span><span class="o">-</span><span class="err">\</span><span class="n">xAF</span><span class="p">]</span>
+<span class="err">\</span><span class="n">xE2</span><span class="err">\</span><span class="n">x80</span><span class="p">[</span><span class="err">\</span><span class="n">x8C</span><span class="o">-</span><span class="err">\</span><span class="n">x8F</span><span class="err">\</span><span class="n">xAA</span><span class="o">-</span><span class="err">\</span><span class="n">xAE</span><span class="p">]</span></code></pre></figure>
+
+<p>在<code class="highlighter-rouge">hfs_apple_module_fixups</code>函数中调用了<code class="highlighter-rouge">contains_ignorable_sequence</code>：</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="k">if</span> <span class="p">(</span><span class="n">contains_ignorable_sequence</span><span class="p">(</span><span class="n">r</span><span class="o">-&gt;</span><span class="n">filename</span><span class="p">))</span> <span class="p">{</span>
+
+	<span class="n">ap_log_rerror</span><span class="p">(</span><span class="n">APLOG_MARK</span><span class="p">,</span> <span class="n">APLOG_NOERRNO</span><span class="o">|</span><span class="n">APLOG_ERR</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span>
+
+			  <span class="s">"mod_hfs_apple: URI %s has ignorable character sequence. Denying access."</span><span class="p">,</span>
+
+			  <span class="n">r</span><span class="o">-&gt;</span><span class="n">filename</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="n">HTTP_FORBIDDEN</span><span class="p">;</span>
+
+<span class="p">}</span></code></pre></figure>
+
+<p>   当URI中的filename存在这些字符序列时，则返回为这个请求是禁止的。更有意思的事情是，补丁虽然打了，但Apple还是没有将mod_hfs_apple模块设为默认加载，在虚拟机上安装了OS X Yosemite 10.10来看看。</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/01151244817cb1ad2440184c83afe16bba26039f.jpg" /></p>
+
+<p>   直到去年有安全研究员提出了”osx apache没有默认加载mod_hfs_apple模块那么打补丁有什么意义？” CVE-2015-3675就这么诞生了2333。</p>
+
+<p>   The default configuration of the Apache HTTP Server on Apple OS X before 10.10.4 does not enable the mod_hfs_apple module, which allows remote attackers to bypass HTTP authentication via a crafted URL.</p>
+
+<p>https://support.apple.com/zh-cn/HT204942</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/4444.png" /></p>
+
+<p>修补的方式就是默认加载了。我本机是OSX EI Caption 10.11.6，自带的Apache默认加载了这个模块：</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/6tt.png" /></p>
+
+<h2 id="漏洞蔓延">漏洞蔓延</h2>
+
+<p>   根据服务+操作系统+第三方包指纹搜索，发现在公网架设Apache服务的Osx系统中，用集成包的要比用系统原生的多，MAMP这几个就犹如win下的php study等等第三方包一样流行，MAMP在Bitnami上也很流行，这就很尴尬了。</p>
+
+<p>MAMP &amp; MAMP Pro(2015-12-14):</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/011519390827084e57aa7c78373b8faef228197b.png" /></p>
+
+<p>XAMPP(2016-04-21):</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/011523524d67e25007dfc50ca6557b29820cfa3f.png" /></p>
+
+<p>AMPPS(2015-01-03):</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/011541228e7c5de5424f3967e04b1dbe1554c098.png" /></p>
+
+<p>Payload：</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="o">%</span><span class="n">EF</span><span class="o">%</span><span class="n">BB</span><span class="o">%</span><span class="n">BF</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AA</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AB</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AC</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AD</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AE</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">81</span><span class="o">%</span><span class="n">AF</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">80</span><span class="o">%</span><span class="n">AE</span>
+<span class="o">%</span><span class="n">E2</span><span class="o">%</span><span class="mi">80</span><span class="o">%</span><span class="mi">8</span><span class="n">C</span></code></pre></figure>
+
+<p>MAMP &amp; MAMP Pro：</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/1.png" /></p>
+
+<p>AMPPS：</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/2.png" /></p>
+
+<p>XAMPP:</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/3.png" /></p>
+
+<h2 id="写在最后">写在最后</h2>
+
+<p>   虽然第三方包居多，但是想找得更全很难，毕竟是中间件的第三方包，很多站建起来就不好找是不是用这个第三方包搭建的。此漏洞完整的生命线就到这儿了，感兴趣的可以继续研究下补丁。</p>
+
+</div>
+</div>
+
+<div style="display: none;">
+	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+</div>
+		</main>
+		<!-- <footer>
+
+</footer>
+ -->
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
