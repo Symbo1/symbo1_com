@@ -10,8 +10,6 @@ permalink: /about/
 
 > Reward只是一时的，每个Acknowledgement才是永恒的。这才应该是Researcher最初的模样与最终的境界:D
 
-> 我们有个坑老外分队，想加入交流的可以联系任意<a href="/members/" target="_blank">核心成员</a>。
-
 <div align="right">
 <table>
   <tr>
