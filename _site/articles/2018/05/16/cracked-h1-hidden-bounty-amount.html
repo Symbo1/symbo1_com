@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Cracked HackerOne Hidden Bounty Amount -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Tr3jer_CongRong.'s RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Tr3jer_CongRong.'s Atom Feed" href="/atom.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+<link rel="license" type="text/plain" src="/statics/LICENSE">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+		<!-- <li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li> -->
+	</ul>
+</nav>
+
+		<main>
+			<div class="post-content">
+<div id="post">
+<h1 align="center">Cracked HackerOne Hidden Bounty Amount</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">16 May 2018 - CongRong</p>
+
+<h2 id="poc">POC:</h2>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#coding:utf-8</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="k">class</span> <span class="nc">crack</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">teams</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">formatted_bounty</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s">"$"</span><span class="p">:[</span><span class="s">"BOUNTY_LOW"</span><span class="p">,</span><span class="s">"base_bounty"</span><span class="p">,</span><span class="s">"&lt;"</span><span class="p">],</span>
+			<span class="s">"$$"</span><span class="p">:[</span><span class="s">"BOUNTY_MEDIUM"</span><span class="p">,</span><span class="s">"base_bounty"</span><span class="p">,</span> <span class="s">"&gt;="</span><span class="p">],</span>
+			<span class="s">"$$$"</span><span class="p">:[</span><span class="s">"BOUNTY_HIGH"</span><span class="p">,</span><span class="s">"top_bounty_lower_range"</span><span class="p">,</span> <span class="s">"&gt;="</span><span class="p">],</span>
+			<span class="s">"$$$$"</span><span class="p">:[</span><span class="s">"BOUNTY_SEVERE"</span><span class="p">,</span><span class="s">"top_bounty_lower_range"</span><span class="p">,</span> <span class="s">"&gt;="</span><span class="p">]</span>
+		<span class="p">}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s">'accept'</span><span class="p">:</span> <span class="s">'application/json'</span><span class="p">,</span>
+			<span class="s">'x-requested-with'</span><span class="p">:</span> <span class="s">'XMLHttpRequest'</span><span class="p">,</span>
+		<span class="p">}</span>
+
+
+	<span class="k">def</span> <span class="nf">loads_hide_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">print</span> <span class="s">"[+] Loads Hidden Bounty Reports ..."</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="s">'https://hackerone.com/hacktivity?sort_type=latest_disclosable_activity_at&amp;page={}&amp;filter=type</span><span class="si">%3</span><span class="s">Abounty-awarded</span><span class="si">%20</span><span class="s">{}&amp;range=forever'</span>
+		<span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+		<span class="n">bounty_reports</span> <span class="o">=</span> <span class="n">req</span><span class="p">[</span><span class="s">'reports'</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">req</span><span class="p">[</span><span class="s">'pages'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">"[+] There are {} pages"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req</span><span class="p">[</span><span class="s">'pages'</span><span class="p">])</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">req</span><span class="p">[</span><span class="s">'pages'</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+				<span class="n">bounty_reports</span> <span class="o">+=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s">'reports'</span><span class="p">]</span>
+
+		<span class="n">hide_bounty_reports</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="s">'bounty_disclosed'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,</span> <span class="n">bounty_reports</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hide_bounty_reports</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">"[+] Hide Bounty Reports Count 0!"</span>
+			<span class="nb">exit</span><span class="p">()</span>
+
+		<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hide_bounty_reports</span><span class="p">):</span>
+			<span class="n">report_tmp</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="n">report_tmp</span><span class="p">[</span><span class="s">'id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s">'id'</span><span class="p">]</span>
+			<span class="n">report_tmp</span><span class="p">[</span><span class="s">'team'</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s">'team'</span><span class="p">][</span><span class="s">'handle'</span><span class="p">]</span>
+			<span class="n">report_tmp</span><span class="p">[</span><span class="s">'from_or_to'</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_tmp</span><span class="p">[</span><span class="s">'team'</span><span class="p">]</span> <span class="k">if</span> <span class="s">'from</span><span class="si">%3</span><span class="s">A'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="n">p</span><span class="p">[</span><span class="s">'reporter'</span><span class="p">][</span><span class="s">'username'</span><span class="p">]</span>
+			<span class="n">report_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s">'formatted_bounty'</span><span class="p">]</span>
+			<span class="n">time_format</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s">'latest_disclosable_activity_at'</span><span class="p">],</span> <span class="s">"</span><span class="si">%</span><span class="s">Y-</span><span class="si">%</span><span class="s">m-</span><span class="si">%</span><span class="s">dT</span><span class="si">%</span><span class="s">H:</span><span class="si">%</span><span class="s">M:</span><span class="si">%</span><span class="s">S.</span><span class="si">%</span><span class="s">fZ"</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">"</span><span class="si">%</span><span class="s">Y/</span><span class="si">%</span><span class="s">m/</span><span class="si">%</span><span class="s">d </span><span class="si">%</span><span class="s">H:</span><span class="si">%</span><span class="s">M:</span><span class="si">%</span><span class="s">S"</span><span class="p">)</span>
+			<span class="n">report_tmp</span><span class="p">[</span><span class="s">'hacktivity'</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s">'latest_disclosable_action'</span><span class="p">]</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">time_format</span>
+			<span class="n">results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_tmp</span>
+			<span class="k">print</span> <span class="s">"[{}] -&gt; {} {} {} {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> 
+											<span class="n">report_tmp</span><span class="p">[</span><span class="s">'id'</span><span class="p">],</span> 
+											<span class="n">report_tmp</span><span class="p">[</span><span class="s">'from_or_to'</span><span class="p">],</span> 
+											<span class="n">report_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">],</span> 
+											<span class="n">report_tmp</span><span class="p">[</span><span class="s">'hacktivity'</span><span class="p">]</span>
+											<span class="p">)</span>
+
+		<span class="n">report_key</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">"Select Bounty Hidden Report [Default ALL]:"</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">report_key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">report_key</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">report_keys</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">report_key</span><span class="p">)]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">report_keys</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">report_keys</span><span class="p">:</span>
+			<span class="n">res_tmp</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="n">team</span> <span class="o">=</span> <span class="n">res_tmp</span><span class="p">[</span><span class="s">'team'</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">team</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="n">team</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loads_team</span><span class="p">(</span><span class="n">team</span><span class="p">)</span>
+			<span class="n">bounty_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatted_bounty</span><span class="p">[</span><span class="n">res_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">]]</span>
+			<span class="n">team_base_bounty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="n">team</span><span class="p">][</span><span class="s">'base_bounty'</span><span class="p">]</span>
+			<span class="n">team_top_bounty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="n">team</span><span class="p">][</span><span class="s">'top_bounty_lower_range'</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">team_base_bounty</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">team_top_bounty</span> <span class="ow">and</span> <span class="n">res_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s">"$"</span><span class="p">,</span><span class="s">"$$"</span><span class="p">]:</span>
+				<span class="n">math_flag</span> <span class="o">=</span> <span class="s">"&lt;"</span>
+				<span class="n">bounty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="n">team</span><span class="p">][</span><span class="s">'top_bounty_lower_range'</span><span class="p">]</span>
+
+			<span class="k">elif</span> <span class="n">team_base_bounty</span> <span class="ow">and</span> <span class="n">team_top_bounty</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+				<span class="n">bounty</span> <span class="o">=</span> <span class="n">team_base_bounty</span>
+				<span class="n">math_flag</span> <span class="o">=</span> <span class="n">bounty_dict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">res_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s">"$"</span><span class="p">,</span><span class="s">"$$"</span><span class="p">]</span> <span class="k">else</span> <span class="s">"&gt;"</span>
+
+			<span class="k">elif</span> <span class="n">team_base_bounty</span> <span class="ow">and</span> <span class="n">team_top_bounty</span> <span class="ow">and</span> <span class="n">res_tmp</span><span class="p">[</span><span class="s">'bounty'</span><span class="p">]</span> <span class="o">==</span> <span class="s">"$$"</span><span class="p">:</span>
+				<span class="k">print</span> <span class="s">"</span><span class="se">\033</span><span class="s">[15;32m[{}:{}] ${} &gt; Bounty &gt;= ${}</span><span class="se">\033</span><span class="s">[0m"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">bounty_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">team_top_bounty</span><span class="p">,</span> <span class="n">team_base_bounty</span><span class="p">)</span>
+				<span class="k">continue</span>
+
+			<span class="k">elif</span> <span class="ow">not</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[</span><span class="n">team_base_bounty</span><span class="p">,</span> <span class="n">team_top_bounty</span><span class="p">]):</span>
+				<span class="k">print</span> <span class="s">"</span><span class="se">\033</span><span class="s">[15;33m[{}] {} Team not show the Amount of Bounty, please read https://hackerone.com/{} page find this</span><span class="se">\033</span><span class="s">[0m"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">team</span><span class="p">,</span><span class="n">team</span><span class="p">)</span>
+				<span class="n">math_flag</span> <span class="o">=</span> <span class="s">"&gt;"</span>
+				<span class="n">bounty</span> <span class="o">=</span> <span class="mi">0</span>
+
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">math_flag</span> <span class="o">=</span> <span class="n">bounty_dict</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+				<span class="n">bounty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="n">team</span><span class="p">][</span><span class="n">bounty_dict</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+			<span class="k">print</span> <span class="s">"</span><span class="se">\033</span><span class="s">[15;32m[{}:{}] Bounty {} ${}</span><span class="se">\033</span><span class="s">[0m"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">bounty_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">math_flag</span><span class="p">,</span> <span class="n">bounty</span><span class="p">)</span>
+
+
+	<span class="k">def</span> <span class="nf">loads_team</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">):</span>
+		<span class="k">print</span> <span class="s">"[+] Analysis {} Team Information ..."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="p">)</span>
+		<span class="n">team_base</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://hackerone.com/{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+		<span class="n">team_metrics</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'https://hackerone.com/{}/profile_metrics.json'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+		<span class="n">team_rule</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">team_rule</span><span class="p">[</span><span class="s">'base_bounty'</span><span class="p">]</span> <span class="o">=</span> <span class="n">team_base</span><span class="p">[</span><span class="s">'base_bounty'</span><span class="p">]</span> <span class="k">if</span> <span class="s">'base_bounty'</span> <span class="ow">in</span> <span class="n">team_base</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="bp">None</span>
+		<span class="n">team_rule</span><span class="p">[</span><span class="s">'top_bounty_lower_range'</span><span class="p">]</span> <span class="o">=</span> <span class="n">team_metrics</span><span class="p">[</span><span class="s">'top_bounty_lower_range'</span><span class="p">]</span>
+
+		<span class="k">return</span> <span class="n">team_rule</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+	<span class="n">crack_type</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">"please Input Crack Type[0:hack {default}/1:team]"</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">crack_type</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">crack_type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">user</span> <span class="o">=</span> <span class="s">"to</span><span class="si">%3</span><span class="s">A"</span> <span class="o">+</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">"please Input Team Names has Handle:"</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">user</span> <span class="o">=</span> <span class="s">"from</span><span class="si">%3</span><span class="s">A"</span> <span class="o">+</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">"please Input HackerOne Id:"</span><span class="p">)</span>
+	<span class="n">crack</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">loads_hide_reward</span><span class="p">()</span></code></pre></figure>
+
+<p>@geekboy:</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/579xovyz.png" /></p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/575csqpv.png" /></p>
+
+<p>@quora:</p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/378eahxk.png" /></p>
+
+<p><img src="http://blog-1252048719.cos.ap-shanghai.myqcloud.com/21uemnb.png" /></p>
+
+</div>
+</div>
+
+<div style="display: none;">
+	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+</div>
+		</main>
+		<!-- <footer>
+
+</footer>
+ -->
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
