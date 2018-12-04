@@ -45,7 +45,13 @@
 </nav>
 
 		<main>
-			<div class="post-content">
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
 <div id="post">
 <h1 align="center">Bypass uber xss regex filter</h1>
 <!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
@@ -53,7 +59,7 @@
 
 <h2 id="前言">前言</h2>
 
-<p>两个月前的一天，在Hackerone上看了不少报告之后的我跃跃欲试，不自量力地给自己定下一个目标：一定要找一个能够获得Bounty的漏洞！然后，前后差不多花了三天的时候，找到了Uber网站的一个XSS漏洞。今早也顺利地收获了人生的第一笔奖金，$7000。接下来就分享一下这个漏洞吧。</p>
+<p>   两个月前的一天，在Hackerone上看了不少报告之后的我跃跃欲试，不自量力地给自己定下一个目标：一定要找一个能够获得Bounty的漏洞！然后，前后差不多花了三天的时候，找到了Uber网站的一个XSS漏洞。今早也顺利地收获了人生的第一笔奖金，$7000。接下来就分享一下这个漏洞吧。</p>
 
 <h2 id="漏洞代码">漏洞代码</h2>
 
@@ -76,11 +82,11 @@
     <span class="nx">s</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">s</span><span class="p">);</span>
 <span class="p">})();</span></code></pre></figure>
 
-<p>目前代码还能在：https://tags.tiqcdn.com/utag/uber/main/prod/utag.273.js 看到，不过修复之后相应的网站已经不会加载这个代码文件了。 通过阅读上面这段代码，我们能够知道参数是<code class="highlighter-rouge">kxsrc</code>是可以被用户控制的，而且如果满足一定条件，该参数所指定的js文件就会被加载。</p>
+<p>   目前代码还能在：https://tags.tiqcdn.com/utag/uber/main/prod/utag.273.js 看到，不过修复之后相应的网站已经不会加载这个代码文件了。 通过阅读上面这段代码，我们能够知道参数是<code class="highlighter-rouge">kxsrc</code>是可以被用户控制的，而且如果满足一定条件，该参数所指定的js文件就会被加载。</p>
 
 <h2 id="漏洞分析">漏洞分析</h2>
 
-<p>咋一看，这段代码似乎没有什么问题：JS文件只能是<code class="highlighter-rouge">krxd.net</code>域下的文件。然而，在正则表达式里：<code class="highlighter-rouge">.</code>代表的意思是匹配任意字符。我们来做一个简单的实验，F12打开浏览器的调试窗口：</p>
+<p>   咋一看，这段代码似乎没有什么问题：JS文件只能是<code class="highlighter-rouge">krxd.net</code>域下的文件。然而，在正则表达式里：<code class="highlighter-rouge">.</code>代表的意思是匹配任意字符。我们来做一个简单的实验，F12打开浏览器的调试窗口：</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&gt;</span> <span class="sr">/^https</span><span class="se">?</span><span class="sr">:</span><span class="se">\/\/([</span><span class="sr">a-z0-9-.</span><span class="se">]</span><span class="sr">+.</span><span class="se">)?</span><span class="sr">krxd.net</span><span class="se">(</span><span class="sr">:</span><span class="se">\d{1,5})?\/</span><span class="sr">controltag</span><span class="se">\/</span><span class="sr">/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'https://a.bkrxd.net/controltag/evil.js'</span><span class="p">)</span>
 <span class="o">&lt;</span> <span class="kc">true</span>
