@@ -16,7 +16,7 @@ permalink: /about/
     <td align="center">2018.12.01</td>
   </tr>
   <tr>
-    <td align="right"><a href="mailto:symbo1.sec@gmail.com" target="_blank">Symbo1 Security Team</a>.</td>
+    <td align="right"><a href="mailto:root@symbo1.com" target="_blank">Symbo1 Security Team</a>.</td>
   </tr>
 </table>
 </div>
