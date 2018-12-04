@@ -6,7 +6,5 @@ Symbo1 作为国内以新姿态诞生的安全组织。hunting国际厂商并不
 
 Reward只是一时的，每个Acknowledgement才是永恒的。这才应该是Researcher最初的模样与最终的境界:D
 
-我们有个坑老外分队，想加入交流的可以联系任意核心成员。
-
 2018.12.01
 Symbo1 Security Team.
