@@ -14,7 +14,7 @@ permalink: /about/
 
 * Symbo1 is derived from the English word "symbol".
 
-> &nbsp;&nbsp;&nbsp;Symbo1 is a brand-new independent security research team. In order to learn new techniques and work on more challenges within information security, we proactively participate in various Vulnerability Reporting Programs at international companies. Symbo1 will be free to share our knowledge, technology and open-source projects aim to contribute the whole security community.
+> &nbsp;&nbsp;&nbsp;Symbo1 is a brand-new independent security research team. In order to learn new techniques and work on more challenges within information security, we proactively participate in various Vulnerability Reporting Programs at international companies. Symbo1 will be free to share our knowledge, technology and open-source projects, aim to contribute the whole security community.
 
 > &nbsp;&nbsp;&nbsp;Happy hunting, and enjoy the acknowledgement apart from the reward. Never forget why you started, and your mission can be accomplished.
 
