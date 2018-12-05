@@ -21,7 +21,7 @@ permalink: /about/
 <div align="right">
 <table>
   <tr>
-    <td align="center">2018.12.01</td>
+    <td align="center">2018.12.01&nbsp;<a href="/feed.xml" target="_blank">RSS</a></td>
   </tr>
   <tr>
     <td align="right"><a href="mailto:root@symbo1.com" target="_blank">Symbo1 Security Team</a>.</td>
