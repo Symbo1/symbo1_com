@@ -7,6 +7,19 @@
         <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
+                <title>APACHE TIKA DOS VULNERABILITY (CVE-2018-11761)</title>
+                        
+                
+                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;06 Dec 2018 - avfisher&lt;/p&gt;
+
+</description>
+                
+                <pubDate>Thu, 06 Dec 2018 00:00:00 +0800</pubDate>
+                <link>http://localhost:4000/articles/2018/12/06/apache-tika-dos.html</link>
+                <guid isPermaLink="true">http://localhost:4000/articles/2018/12/06/apache-tika-dos.html</guid>
+            </item>
+        
+            <item>
                 <title>Hijack the JS File of Uber's Website</title>
                         
                 
@@ -121,19 +134,6 @@
                 <pubDate>Sat, 10 Sep 2016 00:00:00 +0800</pubDate>
                 <link>http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html</link>
                 <guid isPermaLink="true">http://localhost:4000/articles/2016/09/10/bypass-uber-xss-filter.html</guid>
-            </item>
-        
-            <item>
-                <title>Osx Apache Code To Disclose</title>
-                        
-                
-                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;01 Jun 2016 - CongRong&lt;/p&gt;
-
-</description>
-                
-                <pubDate>Wed, 01 Jun 2016 00:00:00 +0800</pubDate>
-                <link>http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html</link>
-                <guid isPermaLink="true">http://localhost:4000/articles/2016/06/01/osx-apache-code-disclose.html</guid>
             </item>
         
     </channel>
