@@ -8,8 +8,6 @@ categories: articles
 
 ## Steps To Reproduce:
 
-(Add details for how we can reproduce the issue)
-
 Step 1: visit and login
 
 Step 2:
