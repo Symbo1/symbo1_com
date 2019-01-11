@@ -4,6 +4,8 @@ title: Facebook PageAnalyst Could Add oneself as Moderator on Group
 categories: articles
 ---
 
+<p align="right" class="date">{{ page.date | date_to_string }} - onehackzero</p>
+
 ## Description
 
 &nbsp;&nbsp;&nbsp;There is a call to add member as the moderator on a group. The call at the time didn’t seem to have any authorisation checks to page roles. A page analyst was possible to add oneself as a moderator on a linked group.
