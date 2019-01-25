@@ -24,8 +24,8 @@ query_params = {"3":"false","1":"image/jpeg","2":2,"0":{"surface":"GROUP_POST_CH
 
 ## Timeline
 
-- Jan 4, 2018 - Report Sent
-- Jan 10, 2018 - Further investigation by Facebook
+- Jan 4, 2019 - Report Sent
+- Jan 10, 2019 - Further investigation by Facebook
 - Jan 23, 2019 - Fixed by Facebook
 - Jan 25, 2019 - Bounty Awarded by Facebook
 
