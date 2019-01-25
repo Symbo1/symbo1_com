@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Facebook Change product availability as a PageAnalyst
+title: Facebook Change Product Availability as a PageAnalyst
 categories: articles
 ---
 
