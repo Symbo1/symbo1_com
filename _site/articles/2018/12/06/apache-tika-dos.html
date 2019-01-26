@@ -55,7 +55,8 @@
   <p align="right" class="date">06 Dec 2018 - avfisher</p>
 
 <h2 id="summary">Summary</h2>
-<p>In a recent research on Apache Tika, I found a DOS (Denial of Service) vulnerability existed on its XML parser. It is caused that the parser improperly parses XML document.</p>
+
+<p>   In a recent research on Apache Tika, I found a DOS (Denial of Service) vulnerability existed on its XML parser. It is caused that the parser improperly parses XML document.</p>
 
 <h2 id="affected-version">Affected Version</h2>
 
@@ -64,7 +65,8 @@
 </ul>
 
 <h2 id="analysis">Analysis</h2>
-<p>As we know, the core ingest attachment plugin lets Elasticsearch extract file attachments in common formats (such as PPT, XLS, and PDF) by using the Apache text extraction library <a target="_blank" href="http://lucene.apache.org/tika/">Tika</a>. So, let’s take a look at the <a target="_blank" href="https://github.com/elastic/elasticsearch/blob/master/plugins/ingest-attachment/src/main/java/org/elasticsearch/ingest/attachment/TikaImpl.java#L89">source code</a> of ingest attachment plugin.</p>
+
+<p>   As we know, the core ingest attachment plugin lets Elasticsearch extract file attachments in common formats (such as PPT, XLS, and PDF) by using the Apache text extraction library <a target="_blank" href="http://lucene.apache.org/tika/">Tika</a>. So, let’s take a look at the <a target="_blank" href="https://github.com/elastic/elasticsearch/blob/master/plugins/ingest-attachment/src/main/java/org/elasticsearch/ingest/attachment/TikaImpl.java#L89">source code</a> of ingest attachment plugin.</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="cm">/** subset of parsers for types we support */</span>
 <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Parser</span> <span class="n">PARSERS</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Parser</span><span class="o">[]</span> <span class="o">{</span>

@@ -7,14 +7,16 @@ categories: articles
 <p align="right" class="date">{{ page.date | date_to_string }} - avfisher</p>
 
 ## Summary
-In a recent research on Apache Tika, I found a DOS (Denial of Service) vulnerability existed on its XML parser. It is caused that the parser improperly parses XML document.
+
+&nbsp;&nbsp;&nbsp;In a recent research on Apache Tika, I found a DOS (Denial of Service) vulnerability existed on its XML parser. It is caused that the parser improperly parses XML document.
 
 ## Affected Version
 
 * Tested on ElasticSearch 6.3.1 (using Tika 1.18) and 6.2.3 (using Tika 1.17)
 
 ## Analysis
-As we know, the core ingest attachment plugin lets Elasticsearch extract file attachments in common formats (such as PPT, XLS, and PDF) by using the Apache text extraction library <a target="_blank" href="http://lucene.apache.org/tika/">Tika</a>. So, let’s take a look at the <a target="_blank" href="https://github.com/elastic/elasticsearch/blob/master/plugins/ingest-attachment/src/main/java/org/elasticsearch/ingest/attachment/TikaImpl.java#L89">source code</a> of ingest attachment plugin.
+
+&nbsp;&nbsp;&nbsp;As we know, the core ingest attachment plugin lets Elasticsearch extract file attachments in common formats (such as PPT, XLS, and PDF) by using the Apache text extraction library <a target="_blank" href="http://lucene.apache.org/tika/">Tika</a>. So, let’s take a look at the <a target="_blank" href="https://github.com/elastic/elasticsearch/blob/master/plugins/ingest-attachment/src/main/java/org/elasticsearch/ingest/attachment/TikaImpl.java#L89">source code</a> of ingest attachment plugin.
 
 {% highlight java %}
 /** subset of parsers for types we support */
