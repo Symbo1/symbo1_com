@@ -7,6 +7,19 @@
         <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
+                <title>Github Desktop RCEx2 for Mac latest Version</title>
+                        
+                
+                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;14 Feb 2019 - CongRong&lt;/p&gt;
+
+</description>
+                
+                <pubDate>Thu, 14 Feb 2019 00:00:00 +0800</pubDate>
+                <link>http://localhost:4000/articles/2019/02/14/github-desktop-mac-2rce.html</link>
+                <guid isPermaLink="true">http://localhost:4000/articles/2019/02/14/github-desktop-mac-2rce.html</guid>
+            </item>
+        
+            <item>
                 <title>Facebook Change Product Availability as a PageAnalyst</title>
                         
                 
@@ -121,19 +134,6 @@
                 <pubDate>Wed, 04 Jul 2018 00:00:00 +0800</pubDate>
                 <link>http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html</link>
                 <guid isPermaLink="true">http://localhost:4000/articles/2018/07/04/abusing-cors-via-null-origin.html</guid>
-            </item>
-        
-            <item>
-                <title>Cracked HackerOne Hidden Bounty Amount</title>
-                        
-                
-                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;16 May 2018 - CongRong&lt;/p&gt;
-
-</description>
-                
-                <pubDate>Wed, 16 May 2018 00:00:00 +0800</pubDate>
-                <link>http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html</link>
-                <guid isPermaLink="true">http://localhost:4000/articles/2018/05/16/cracked-h1-hidden-bounty-amount.html</guid>
             </item>
         
     </channel>

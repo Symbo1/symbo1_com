@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Github Desktop RCEx2 for Mac latest Version -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="/projects">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Github Desktop RCEx2 for Mac latest Version</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">14 Feb 2019 - CongRong</p>
+
+<p>截至今日最新版的两处RCE，第一个重复/第二个内部排查已知，复现蛮简单的，直接show your code.</p>
+
+<h2 id="0x01">0x01</h2>
+
+<p>app/src/ui/diff/binary-file.tsx:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">export</span> <span class="kd">class</span> <span class="nx">BinaryFile</span> <span class="kd">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span><span class="o">&lt;</span><span class="nx">IBinaryFileProps</span><span class="p">,</span> <span class="p">{}</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kr">private</span> <span class="nx">open</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">fullPath</span> <span class="o">=</span> <span class="nx">Path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">path</span><span class="p">)</span>
+    <span class="nx">openFile</span><span class="p">(</span><span class="nx">fullPath</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">dispatcher</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="kr">public</span> <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">"panel binary"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"diff"</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">"image-header"</span><span class="o">&gt;</span><span class="nx">This</span> <span class="nx">binary</span> <span class="nx">file</span> <span class="nx">has</span> <span class="nx">changed</span><span class="p">.</span><span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">"image-header"</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">LinkButton</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">open</span><span class="p">}</span><span class="o">&gt;</span>
+            <span class="nx">Open</span> <span class="nx">file</span> <span class="k">in</span> <span class="nx">external</span> <span class="nx">program</span><span class="p">.</span>
+          <span class="o">&lt;</span><span class="sr">/LinkButton</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Follow up <code class="highlighter-rouge">openFile</code></p>
+
+<p>app/src/ui/lib/open-file.ts:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">shell</span><span class="p">.</span><span class="nx">openExternal</span><span class="p">(</span><span class="s2">`file://</span><span class="p">${</span><span class="nx">fullPath</span><span class="p">}</span><span class="s2">`</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="0x02">0x02</h2>
+
+<p>app/src/ui/lib/context-menu.ts:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">const</span> <span class="nx">RestrictedFileExtensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'.cmd'</span><span class="p">,</span> <span class="s1">'.exe'</span><span class="p">,</span> <span class="s1">'.bat'</span><span class="p">,</span> <span class="s1">'.sh'</span><span class="p">]</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">CopyFilePathLabel</span> <span class="o">=</span> <span class="nx">__DARWIN__</span>
+  <span class="p">?</span> <span class="s1">'Copy File Path'</span>
+  <span class="p">:</span> <span class="s1">'Copy file path'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">DefaultEditorLabel</span> <span class="o">=</span> <span class="nx">__DARWIN__</span>
+  <span class="p">?</span> <span class="s1">'Open in External Editor'</span>
+  <span class="p">:</span> <span class="s1">'Open in external editor'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">RevealInFileManagerLabel</span> <span class="o">=</span> <span class="nx">__DARWIN__</span>
+  <span class="p">?</span> <span class="s1">'Reveal in Finder'</span>
+  <span class="p">:</span> <span class="nx">__WIN32__</span>
+  <span class="p">?</span> <span class="s1">'Show in Explorer'</span>
+  <span class="p">:</span> <span class="s1">'Show in your File Manager'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">TrashNameLabel</span> <span class="o">=</span> <span class="nx">__DARWIN__</span> <span class="p">?</span> <span class="s1">'Trash'</span> <span class="p">:</span> <span class="s1">'Recycle Bin'</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">OpenWithDefaultProgramLabel</span> <span class="o">=</span> <span class="nx">__DARWIN__</span>
+  <span class="p">?</span> <span class="s1">'Open with Default Program'</span>
+  <span class="p">:</span> <span class="s1">'Open with default program'</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">isSafeFileExtension</span><span class="p">(</span><span class="nx">extension</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="kr">boolean</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">__WIN32__</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">RestrictedFileExtensions</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">extension</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">())</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">context-menu</code> restricted these files extensions:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">const</span> <span class="nx">RestrictedFileExtensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'.cmd'</span><span class="p">,</span> <span class="s1">'.exe'</span><span class="p">,</span> <span class="s1">'.bat'</span><span class="p">,</span> <span class="s1">'.sh'</span><span class="p">]</span></code></pre></figure>
+
+<p>But macos is a Unix OS, and many binary files can be run directly.</p>
+
+<p>Follow up and search <code class="highlighter-rouge">OpenWithDefaultProgramLabel</code>:</p>
+
+<p>app/src/ui/changes/changes-list.tsx:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">24</span>    <span class="nx">CopyFilePathLabel</span><span class="p">,</span>
+<span class="mi">25</span>    <span class="nx">RevealInFileManagerLabel</span><span class="p">,</span>
+<span class="mi">26</span><span class="p">:</span>   <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">27</span>  <span class="p">}</span> <span class="k">from</span> <span class="s1">'../lib/context-menu'</span>
+<span class="mi">28</span>  <span class="k">import</span> <span class="p">{</span> <span class="nx">CommitMessage</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'./commit-message'</span>
+<span class="p">..</span>
+<span class="mi">374</span>        <span class="p">},</span>
+<span class="mi">375</span>        <span class="p">{</span>
+<span class="mi">376</span><span class="p">:</span>         <span class="nx">label</span><span class="p">:</span> <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">377</span>          <span class="nx">action</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">onOpenItem</span><span class="p">(</span><span class="nx">path</span><span class="p">),</span>
+<span class="mi">378</span>          <span class="nx">enabled</span><span class="p">:</span> <span class="nx">isSafeExtension</span> <span class="o">&amp;&amp;</span> <span class="nx">status</span><span class="p">.</span><span class="nx">kind</span> <span class="o">!==</span> <span class="nx">AppFileStatusKind</span><span class="p">.</span><span class="nx">Deleted</span><span class="p">,</span></code></pre></figure>
+
+<p>app/src/ui/history/file-list.tsx:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">13</span>    <span class="nx">DefaultEditorLabel</span><span class="p">,</span>
+<span class="mi">14</span>    <span class="nx">RevealInFileManagerLabel</span><span class="p">,</span>
+<span class="mi">15</span><span class="p">:</span>   <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">16</span>  <span class="p">}</span> <span class="k">from</span> <span class="s1">'../lib/context-menu'</span>
+<span class="mi">17</span>  <span class="k">import</span> <span class="p">{</span> <span class="nx">List</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'../lib/list'</span>
+ <span class="p">..</span>
+<span class="mi">150</span>        <span class="p">},</span>
+<span class="mi">151</span>        <span class="p">{</span>
+<span class="mi">152</span><span class="p">:</span>         <span class="nx">label</span><span class="p">:</span> <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">153</span>          <span class="nx">action</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">onOpenItem</span><span class="p">(</span><span class="nx">filePath</span><span class="p">),</span>
+<span class="mi">154</span>          <span class="nx">enabled</span><span class="p">:</span> <span class="nx">isSafeExtension</span> <span class="o">&amp;&amp;</span> <span class="nx">fileExistsOnDisk</span><span class="p">,</span></code></pre></figure>
+
+<p>app/src/ui/merge-conflicts/merge-conflicts-dialog.tsx:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">27</span>  <span class="k">import</span> <span class="p">{</span> <span class="nx">IMenuItem</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'../../lib/menu-item'</span>
+<span class="mi">28</span>  <span class="k">import</span> <span class="p">{</span>
+<span class="mi">29</span><span class="p">:</span>   <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">30</span>    <span class="nx">RevealInFileManagerLabel</span><span class="p">,</span>
+<span class="mi">31</span>  <span class="p">}</span> <span class="k">from</span> <span class="s1">'../lib/context-menu'</span>
+<span class="p">..</span>
+<span class="mi">291</span>        <span class="kd">const</span> <span class="nx">items</span><span class="p">:</span> <span class="nx">IMenuItem</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[</span>
+<span class="mi">292</span>          <span class="p">{</span>
+<span class="mi">293</span><span class="p">:</span>           <span class="nx">label</span><span class="p">:</span> <span class="nx">OpenWithDefaultProgramLabel</span><span class="p">,</span>
+<span class="mi">294</span>            <span class="nx">action</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">openFile</span><span class="p">(</span><span class="nx">absoluteFilePath</span><span class="p">,</span> <span class="nx">dispatcher</span><span class="p">),</span>
+<span class="mi">295</span>          <span class="p">},</span></code></pre></figure>
+
+<p>These calls can be used under macos, not subject to file extensions.</p>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
