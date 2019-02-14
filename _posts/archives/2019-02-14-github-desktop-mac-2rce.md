@@ -6,7 +6,7 @@ categories: articles
 
 <p align="right" class="date">{{ page.date | date_to_string }} - CongRong</p>
 
-截至今日最新版的两处RCE，第一个重复/第二个内部排查已知，复现蛮简单的，直接show your code.
+截至今日最新版的两处RCE，第一个重复@evi1m0/第二个内部排查已知，复现蛮简单的，直接show your code.
 
 ## 0x01
 
