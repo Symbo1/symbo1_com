@@ -59,6 +59,6 @@ response {"status":"failed"}
 
 ## Impact — SQL Injection
 
-![图片1](https://i.imgur.com/MblmdRd.png)
-![图片2](https://i.imgur.com/03zs7X3.png)
+![图片1](https://i.loli.net/2019/04/28/5cc53dbd05596.png)
+![图片2](https://i.loli.net/2019/04/28/5cc53dbd4ad52.png)
 
