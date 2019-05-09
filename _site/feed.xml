@@ -7,6 +7,19 @@
         <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
+                <title>Emma Users Information Leak via endpoint traversal</title>
+                        
+                
+                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;09 May 2019 - saltedfish&lt;/p&gt;
+
+</description>
+                
+                <pubDate>Thu, 09 May 2019 00:00:00 +0800</pubDate>
+                <link>http://localhost:4000/articles/2019/05/09/emma-users-leak.html</link>
+                <guid isPermaLink="true">http://localhost:4000/articles/2019/05/09/emma-users-leak.html</guid>
+            </item>
+        
+            <item>
                 <title>BlueJeans Second Order Sql Injection</title>
                         
                 
@@ -121,19 +134,6 @@
                 <pubDate>Tue, 02 Oct 2018 00:00:00 +0800</pubDate>
                 <link>http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html</link>
                 <guid isPermaLink="true">http://localhost:4000/articles/2018/10/02/vanilla-sql-injection.html</guid>
-            </item>
-        
-            <item>
-                <title>www.zomato.com SQL Injection</title>
-                        
-                
-                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;28 Sep 2018 - saltedfish&lt;/p&gt;
-
-</description>
-                
-                <pubDate>Fri, 28 Sep 2018 00:00:00 +0800</pubDate>
-                <link>http://localhost:4000/articles/2018/09/28/zomato-sqli.html</link>
-                <guid isPermaLink="true">http://localhost:4000/articles/2018/09/28/zomato-sqli.html</guid>
             </item>
         
     </channel>
