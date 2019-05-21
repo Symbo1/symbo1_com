@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Hacking Facebook the Hard Way -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<meta name="referrer" content="no-referrer" />
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="http://github.com/symbo1" target="_blank">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Hacking Facebook the Hard Way</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">21 May 2019 - onehackzero</p>
+
+<h2 id="join-unofficial-facebook-bug-bounty-group">Join Unofficial Facebook Bug Bounty Group</h2>
+<p><a href="https://www.facebook.com/groups/bugbountygroup/">https://www.facebook.com/groups/bugbountygroup/</a></p>
+
+<h2 id="asset">Asset</h2>
+<ul>
+  <li>Facebook Whitehat Information <a href="https://www.facebook.com/whitehat/info/">https://www.facebook.com/whitehat/info/</a></li>
+  <li>Facebook APKs - APKMirror <a href="https://apkmirror.com/apk/facebook-2/">https://apkmirror.com/apk/facebook-2/</a></li>
+  <li>Facebook on the App Store <a href="https://itunes.apple.com/us/developer/facebook-inc/id284882218">https://itunes.apple.com/us/developer/facebook-inc/id284882218</a></li>
+  <li>Over 41 Facebook Products &amp; Services <a href="https://www.minterest.com/list-of-all-facebook-products-and-services/">https://www.minterest.com/list-of-all-facebook-products-and-services/</a></li>
+  <li>List of mergers and acquisitions by Facebook <a href="https://en.wikipedia.org/wiki/List_of_mergers_and_acquisitions_by_Facebook">https://en.wikipedia.org/wiki/List_of_mergers_and_acquisitions_by_Facebook</a></li>
+</ul>
+
+<h2 id="how-to-find-new-features">How to Find New Features</h2>
+<ul>
+  <li>Facebook Newsroom <a href="https://newsroom.fb.com/">https://newsroom.fb.com/</a></li>
+  <li>Jane Manchun Wong <a href="https://twitter.com/wongmjane">https://twitter.com/wongmjane</a></li>
+  <li>Matt Navarra <a href="https://twitter.com/MattNavarra">https://twitter.com/MattNavarra</a></li>
+  <li>News for Developers <a href="https://developers.facebook.com/blog">https://developers.facebook.com/blog</a></li>
+  <li>HH Facebook Changelog / Interface Microagressions <a href="https://www.facebook.com/groups/whobrokethebuild/">https://www.facebook.com/groups/whobrokethebuild/</a></li>
+</ul>
+
+<h2 id="core-testing-methodologies">Core Testing Methodologies</h2>
+<ul>
+  <li>A Facebook GraphQL crash course <a href="https://www.facebook.com/notes/phwd/a-facebook-graphql-crash-course/1189337427822946/">https://www.facebook.com/notes/phwd/a-facebook-graphql-crash-course/1189337427822946/</a></li>
+  <li>Guide to approaching API bugs  <a href="https://www.facebook.com/notes/phwd/facebook-api-bug-bounties-the-basic-sauce/818002471623112">https://www.facebook.com/notes/phwd/facebook-api-bug-bounties-the-basic-sauce/818002471623112</a></li>
+  <li>Unofficial Map of where to find Facebook Bounties <a href="https://www.facebook.com/notes/phwd/facebook-bug-bounties-the-unofficial-treasure-map/1020506894706001">https://www.facebook.com/notes/phwd/facebook-bug-bounties-the-unofficial-treasure-map/1020506894706001</a></li>
+</ul>
+
+<h2 id="ssl-pinning-bypass">SSL Pinning Bypass</h2>
+<ul>
+  <li>OneForAllFacebook <a href="https://github.com/phwd/OneForAllFacebook">https://github.com/phwd/OneForAllFacebook</a></li>
+  <li>Bypass Facebook SSL Certificate Pinning for iOS <a href="https://www.facebook.com/watch/?v=1466262083463811">https://www.facebook.com/watch/?v=1466262083463811</a></li>
+  <li>Security Testing for Mobile Apps Made Easy <a href="https://www.facebook.com/notes/facebook-bug-bounty/security-testing-for-mobile-apps-made-easy/2528930930454451/">https://www.facebook.com/notes/facebook-bug-bounty/security-testing-for-mobile-apps-made-easy/2528930930454451/</a></li>
+  <li>Testing Facebook Mobile Application on Nox Player <a href="https://www.youtube.com/watch?v=BuQJuD2W6wg">https://www.youtube.com/watch?v=BuQJuD2W6wg</a></li>
+</ul>
+
+<h2 id="write-ups">Write-ups</h2>
+<ul>
+  <li>List of Facebook Bug Bounties <a href="https://philippeharewood.com/facebookbugbounties.txt">https://philippeharewood.com/facebookbugbounties.txt</a></li>
+  <li>2017-2018 Facebook Write-ups <a href="https://github.com/1hack0/Facebook-Bug-Bounty-Write-ups">https://github.com/1hack0/Facebook-Bug-Bounty-Write-ups</a></li>
+  <li>2019 Facebook Write-ups <a href="https://airtable.com/shrjEc0BV0VXpmEqN">https://airtable.com/shrjEc0BV0VXpmEqN</a></li>
+</ul>
+
+<h2 id="recommended-blogs">Recommended Blogs</h2>
+<ul>
+  <li>Youssef Sammouda <a href="https://ysamm.com">https://ysamm.com</a></li>
+  <li>Bugreader <a href="https://bugreader.com">https://bugreader.com</a></li>
+  <li>Philippe Harewood <a href="https://philippeharewood.com">https://philippeharewood.com</a></li>
+  <li>Josip Franjković <a href="https://www.josipfranjkovic.com">https://www.josipfranjkovic.com</a></li>
+</ul>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
