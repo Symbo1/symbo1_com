@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<!-- <link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico"> -->
+<title>
+	
+		Determine Members of a closed group -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<meta name="referrer" content="no-referrer" />
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="http://github.com/symbo1" target="_blank">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Determine Members of a closed group</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">26 May 2019 - onehackzero</p>
+
+<p>根据<a href="https://www.facebook.com/help/220336891328465">https://www.facebook.com/help/220336891328465</a>所写，只有当前成员可以看到封闭小组的成员列表。</p>
+
+<p><img src="https://i.loli.net/2019/05/26/5cea3d9654bb712978.png" /></p>
+
+<h3 id="漏洞原因">漏洞原因</h3>
+<p>当我在测试Facebook小组功能的时候，发现了一个GraphQL API请求可以用来绕过这个隐私设置。大致的请求如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">HTTP</span> <span class="nx">POST</span>
+
+<span class="nx">https</span><span class="p">:</span><span class="c1">//graph.facebook.com/graphql/</span>
+
+<span class="nx">query_id</span> <span class="o">=</span> <span class="mi">2433256830023894</span>
+
+<span class="nx">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"4"</span><span class="p">:</span><span class="nx">UserID</span><span class="p">,</span><span class="s2">"11"</span><span class="p">:</span><span class="nx">GroupID</span><span class="p">}</span></code></pre></figure>
+
+<p>其中UserID代表了用户的ID号，GroupID代表了目标小组的ID号。</p>
+
+<p>1) 当UserID是小组成员的时候，响应结果中的adder_profile字段会返回添加该用户的管理员信息。</p>
+
+<p><img src="https://i.loli.net/2019/05/26/5cea3d9678da787645.png" /></p>
+
+<p>2) 当UserID不是该小组成员的时候，响应结果中的adder_profile字段会返回null。</p>
+
+<p><img src="https://i.loli.net/2019/05/26/5cea3d9677e7c79227.png" /></p>
+
+<p>通过这个特征可以判断该用户是不是该封闭小组成员。</p>
+
+<h3 id="poc视频">PoC视频</h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3nl27UnIGMU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
+<h3 id="漏洞影响">漏洞影响</h3>
+<p>该漏洞可用于确定封闭小组的成员。</p>
+
+<h3 id="漏洞上报进程">漏洞上报进程</h3>
+<ul>
+  <li>2019.05.01 向Facebook安全团队上报漏洞</li>
+  <li>2019.05.04 Facebook证实漏洞问题存在并转交给产品团队</li>
+  <li>2019.05.18 Facebook修复漏洞</li>
+  <li>2018.05.19 Facebook向我发放$5,000美金的赏金</li>
+</ul>
+
+<p><img src="https://i.loli.net/2019/05/26/5cea3d963cfaa82431.png" /></p>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
