@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Determine Members of a closed group
+title:  Facebook Determine Members of a closed group
 categories: articles
 ---
 

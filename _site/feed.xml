@@ -7,7 +7,7 @@
         <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
-                <title>Determine Members of a closed group</title>
+                <title>Facebook Determine Members of a closed group</title>
                         
                 
                     <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;26 May 2019 - onehackzero&lt;/p&gt;
@@ -15,8 +15,8 @@
 </description>
                 
                 <pubDate>Sun, 26 May 2019 00:00:00 +0800</pubDate>
-                <link>http://localhost:4000/articles/2019/05/26/determine-members-of-a-closed-group.html</link>
-                <guid isPermaLink="true">http://localhost:4000/articles/2019/05/26/determine-members-of-a-closed-group.html</guid>
+                <link>http://localhost:4000/articles/2019/05/26/fb-determine-members-of-a-closed-group.html</link>
+                <guid isPermaLink="true">http://localhost:4000/articles/2019/05/26/fb-determine-members-of-a-closed-group.html</guid>
             </item>
         
             <item>
