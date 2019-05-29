@@ -7,6 +7,19 @@
         <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
         
             <item>
+                <title>Starbucks Reflection Xss Becomes Storage Xss Due To Cache</title>
+                        
+                
+                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;29 May 2019 - L3m0n&lt;/p&gt;
+
+</description>
+                
+                <pubDate>Wed, 29 May 2019 00:00:00 +0800</pubDate>
+                <link>http://localhost:4000/articles/2019/05/29/starbucks-reflection-xss-becomes-storage-xss-due-to-cache.html</link>
+                <guid isPermaLink="true">http://localhost:4000/articles/2019/05/29/starbucks-reflection-xss-becomes-storage-xss-due-to-cache.html</guid>
+            </item>
+        
+            <item>
                 <title>Facebook Determine Members of a closed group</title>
                         
                 
@@ -121,19 +134,6 @@
                 <pubDate>Thu, 06 Dec 2018 00:00:00 +0800</pubDate>
                 <link>http://localhost:4000/articles/2018/12/06/apache-tika-dos.html</link>
                 <guid isPermaLink="true">http://localhost:4000/articles/2018/12/06/apache-tika-dos.html</guid>
-            </item>
-        
-            <item>
-                <title>Hijack the JS File of Uber's Website</title>
-                        
-                
-                    <description>&lt;p align=&quot;right&quot; class=&quot;date&quot;&gt;03 Dec 2018 - zhchbin&lt;/p&gt;
-
-</description>
-                
-                <pubDate>Mon, 03 Dec 2018 00:00:00 +0800</pubDate>
-                <link>http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html</link>
-                <guid isPermaLink="true">http://localhost:4000/articles/2018/12/03/hijack-jsfile-of-uber.html</guid>
             </item>
         
     </channel>

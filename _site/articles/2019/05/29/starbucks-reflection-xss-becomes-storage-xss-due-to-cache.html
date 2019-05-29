@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico">
+<title>
+	
+		Starbucks Reflection Xss Becomes Storage Xss Due To Cache -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<meta name="referrer" content="no-referrer" />
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="http://github.com/symbo1" target="_blank">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Starbucks Reflection Xss Becomes Storage Xss Due To Cache</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">29 May 2019 - L3m0n</p>
+
+<p>漏洞点十分简单，输出是在<code class="highlighter-rouge">&lt;script&gt;</code>标签中，因为参数只对双引号做了转义出来，所以我们可以通过<code class="highlighter-rouge">&lt;/script&gt;</code>进行逃逸绕过。</p>
+
+<p><img src="https://i.loli.net/2019/05/29/5cee8ca68ecd810327.png" /></p>
+
+<p>但是当时测试的时候最麻烦的点有两个：</p>
+
+<p>1、Akamai Waf，测试发现Waf似乎还会进行简单的解码操作，当时都想<code class="highlighter-rouge">&lt;h1&gt;hacked&lt;/h1&gt;</code>以这种HTML注入方式提交，但是想想还是算了，想要继续扩大危害。</p>
+
+<p>2、访问时候出现莫名其妙的返回，也就是存在缓存，导致我一些payload打过去返回不对。不过侥幸是正因为了这个缓存，才能让反射型XSS变为了存储型XSS，并且还能在chrome上触发。</p>
+
+<p>Waf绕过花了点时间，最终payload为：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="sr">/script&gt;&lt;iframe+srcdoc='%26%2360;img+src=1+onerro%26%23x000000072%26%2361;alert`1`%26%2362;'&gt;&lt;/i</span><span class="nx">frame</span><span class="o">&gt;</span></code></pre></figure>
+
+<p>其实就是借用iframe的srcdoc中可以使用HTML编码来绕过，因为Waf还会解码，所以给HTML16进制编码的时候多加了几个，即<code class="highlighter-rouge">x000000072</code></p>
+
+<p>work on firefox：</p>
+
+<p><img src="https://i.loli.net/2019/05/29/5cee8ca67f55997917.png" /></p>
+
+<p>and work on chrome：</p>
+
+<p><img src="https://i.loli.net/2019/05/29/5cee8ca68687410637.png" /></p>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
