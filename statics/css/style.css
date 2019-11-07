@@ -20,6 +20,14 @@ header, nav {
 	text-align: center;
 }
 
+#navigation{
+    margin-top: 25px;
+	-moz-user-select: none;
+	-webkit-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
+}
+
 .ascii {
 	color: rgba(255,255,255,1);
 	font-weight: bold;
