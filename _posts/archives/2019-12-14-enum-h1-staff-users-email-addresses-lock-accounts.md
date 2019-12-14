@@ -6,7 +6,7 @@ categories: articles
 
 <p align="right" class="date">{{ page.date | date_to_string }} - CongRong</p>
 
-I found https://hackerone.com/sitemap.json a few months ago, but saw that only users starting withawere returned, but later I found out that it can be accessed via the parameterfirstEnumerate all users:
+I found https://hackerone.com/sitemap.json a few months ago, but saw that only users starting withawere returned, but later I found out that it can be accessed via the parameter`first`Enumerate all users:
 
 {% highlight http %}
 https://hackerone.com/sitemap.json?first=[a-z]
