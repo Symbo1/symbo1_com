@@ -73,7 +73,7 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Credentials: false
 {% endhighlight %}
 
-网站http://192.168.31.154:8010/存在三种环境分别对应上述的CORS配置:
+网站 http://192.168.31.154:8010/ 存在三种环境分别对应上述的CORS配置:
 
 {% highlight html %}
 http://192.168.31.154:8010/index.php?type=1 对应 (1)
@@ -91,13 +91,13 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 ![6.png](https://i.loli.net/2020/03/06/viq9mEYFaWtweG6.png)
 
-另外一个网站http://192.168.31.154:8001/ 用来模拟攻击者网站/poc.html负责读取用户的secret值，如果能通过跨域读取到该值，则输出到RESULT框中:
+另外一个网站 http://192.168.31.154:8001/ 用来模拟攻击者网站/poc.html负责读取用户的secret值，如果能通过跨域读取到该值，则输出到RESULT框中:
 
 ![7.png](https://i.loli.net/2020/03/06/PxQYmWSJEzOpCcH.png)
 
 测试正式开始！
 
-[1] 先访问http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret值:
+[1] 先访问 http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret值:
 
 ![8.png](https://i.loli.net/2020/03/06/sUwx5PH4qzemSKG.png)
 
@@ -121,11 +121,11 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 ![13.png](https://i.loli.net/2020/03/06/517tDGpSqNcAHIW.png)
 
-刷新http://192.168.31.154:8001/poc.html 重新点击"Steal secret"，无法读取到secret值。
+刷新 http://192.168.31.154:8001/poc.html 重新点击"Steal secret"，无法读取到secret值。
 
-如果再次关闭"Disable cache"，需要在登录状态下重新访问一次http://192.168.31.154:8010/secret.php 让浏览器缓存该结果，之后才能重新读取secret的值。
+如果再次关闭"Disable cache"，需要在登录状态下重新访问一次 http://192.168.31.154:8010/secret.php 让浏览器缓存该结果，之后才能重新读取secret的值。
 
-[2] 访问http://192.168.31.154:8010/index.php?type=2 输入admin/admin跳转到 http://192.168.31.154:8010/secret2.php 能够正确输出secret值:
+[2] 访问 http://192.168.31.154:8010/index.php?type=2 输入admin/admin跳转到 http://192.168.31.154:8010/secret2.php 能够正确输出secret值:
 
 ![14.png](https://i.loli.net/2020/03/06/l5uafv8eop1iUst.png)
 
@@ -147,7 +147,7 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 这就是一个经典的CORS配置错误导致的跨域敏感信息读取。
 
-[3] 访问http://192.168.31.154:8010/index.php?type=3 输入admin/admin跳转到 http://192.168.31.154:8010/secret3.php 能够正确输出secret:
+[3] 访问 http://192.168.31.154:8010/index.php?type=3 输入admin/admin跳转到 http://192.168.31.154:8010/secret3.php 能够正确输出secret:
 
 ![19.png](https://i.loli.net/2020/03/06/78yXRzlnOEqHr5h.png)
 
@@ -165,7 +165,7 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 所以尝试读取secret值失败。
 
-[4] 在Firefox浏览器中先访问http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret:
+[4] 在Firefox浏览器中先访问 http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret:
 
 ![23.png](https://i.loli.net/2020/03/06/dBQlAS7sRxretf9.png)
 
@@ -173,7 +173,7 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 ![24.png](https://i.loli.net/2020/03/06/sDPuiHAVQRJyXIq.png)
 
-http://192.168.31.154:8001/poc.html的内容需要稍作修改:
+http://192.168.31.154:8001/poc.html 的内容需要稍作修改:
 
 {% highlight html %}
 将第38行const secret = htmlDoc.getElementsByName("secret")[0].text修改为
