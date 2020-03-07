@@ -242,7 +242,7 @@ CORS如果配置Access-Control-Allow-Origin: * (或者Access-Control-Allow-Origi
 * <a href="https://victime.docker.bi.tk/" target="__blank">https://victime.docker.bi.tk/</a>
 * <a href="http://87.98.164.31/malicious.html" target="__blank">http://87.98.164.31/malicious.html</a>
 
-测试代码打包在files.rar中。
+测试代码打包在<a href="https://statics.symbo1.com/file/symbo1/misc/files.rar" target="__blank">files.rar</a>中。
 
 参考信息
 
