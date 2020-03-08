@@ -116,7 +116,7 @@
                 <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">done</span><span class="p">:</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s">'username'</span><span class="p">])</span></code></pre></figure>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa2.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa2.png" alt="" /></p>
 
 <p>After reversing, the staff corresponding to the company is generated:</p>
 
@@ -164,13 +164,13 @@
 
 <p><a href="https://github.com/Symbo1/HackerOne-Staffs" target="_blank">https://github.com/Symbo1/HackerOne-Staffs</a></p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa3.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa3.png" alt="" /></p>
 
 <h2 id="0x02-enumeration-email-addresses">0x02 Enumeration email addresses:</h2>
 
 <p>Under normal circumstances, the registered API will be frequency-limited, but can be bypassed by adding a large number of IPv6 enumerations:</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa4.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa4.png" alt="" /></p>
 
 <p>Here only use gmail for testing, in fact, you can also add outlook, yahoo, mail.ru …</p>
 
@@ -240,11 +240,11 @@
 	<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 	<span class="n">pool</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span></code></pre></figure>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa5.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa5.png" alt="" /></p>
 
 <p>After enumerating <code class="highlighter-rouge">30k+</code> ID’s I stopped the testing, and <code class="highlighter-rouge">2887</code> of them returned with success: (ps. emmmm悄悄的说，后来我获取到了几万)</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa0.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa0.png" alt="" /></p>
 
 <p>As such, for total <code class="highlighter-rouge">600k</code> ID’s, we may be able to get at least tens thousands of valid email addresses.</p>
 
@@ -300,11 +300,11 @@
 	<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
 	<span class="n">pool</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span></code></pre></figure>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa7.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa7.png" alt="" /></p>
 
 <p>After 100+ login attempts with incorrect passwords, the account was locked out successfully.</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa6.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa6.png" alt="" /></p>
 
 <p>If I want to lock someone’s account, I just need to enumerate the email addresses and then loop the script. Because the session will be invalidated after being locked, and the <code class="highlighter-rouge">unlock token</code> is unique each time it is locked.</p>
 
@@ -312,7 +312,7 @@
 
 <p>后来的故事就是封了万个号，h1官方进行了修正，并向被锁账号们群发了该事件的邮件：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa10.png" alt="" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/aa10.png" alt="" /></p>
 
 <p>Just For Fun :]</p>
 

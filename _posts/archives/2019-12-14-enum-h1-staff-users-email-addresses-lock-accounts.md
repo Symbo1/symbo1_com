@@ -68,7 +68,7 @@ if __name__ == '__main__':
                     ret = main(k['username'])
 {% endhighlight %}
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa2.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa2.png)
 
 After reversing, the staff corresponding to the company is generated:
 
@@ -118,13 +118,13 @@ So I have a list of `347` teams corresponding to `3488` staff XD
 
 <a href="https://github.com/Symbo1/HackerOne-Staffs" target="_blank">https://github.com/Symbo1/HackerOne-Staffs</a>
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa3.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa3.png)
 
 ## 0x02 Enumeration email addresses:
 
 Under normal circumstances, the registered API will be frequency-limited, but can be bypassed by adding a large number of IPv6 enumerations:
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa4.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa4.png)
 
 Here only use gmail for testing, in fact, you can also add outlook, yahoo, mail.ru ...
 
@@ -196,11 +196,11 @@ if __name__ == '__main__':
 	pool.map(main, tasks)
 {% endhighlight %}
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa5.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa5.png)
 
 After enumerating `30k+` ID's I stopped the testing, and `2887` of them returned with success: (ps. emmmm悄悄的说，后来我获取到了几万)
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa0.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa0.png)
 
 As such, for total `600k` ID's, we may be able to get at least tens thousands of valid email addresses.
 
@@ -258,11 +258,11 @@ if __name__ == '__main__':
 	pool.map(main, tasks)
 {% endhighlight %}
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa7.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa7.png)
 
 After 100+ login attempts with incorrect passwords, the account was locked out successfully.
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa6.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa6.png)
 
 If I want to lock someone's account, I just need to enumerate the email addresses and then loop the script. Because the session will be invalidated after being locked, and the `unlock token` is unique each time it is locked.
 
@@ -270,6 +270,6 @@ If I want to lock someone's account, I just need to enumerate the email addresse
 
 后来的故事就是封了万个号，h1官方进行了修正，并向被锁账号们群发了该事件的邮件：
 
-![](https://blog-1252048719.cos.ap-shanghai.myqcloud.com/aa10.png)
+![](https://statics.symbo1.com/file/symbo1/article-images/aa10.png)
 
 Just For Fun :]

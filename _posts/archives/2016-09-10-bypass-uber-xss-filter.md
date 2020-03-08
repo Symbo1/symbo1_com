@@ -56,7 +56,7 @@ categories: articles
 < true
 {% endhighlight %}
 
-<img src="http://ww3.sinaimg.cn/large/7184df6bgw1f7otlqoccoj211i03xjsu.jpg">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/7184df6bgw1f7otlqoccoj211i03xjsu.jpg">
 
 ## PoC
 
@@ -66,4 +66,4 @@ categories: articles
 https://www.uber.com/?exp=hp-c&kxsrc=https%3A%2F%2Fwww.akrxd.net%2Fcontroltag%2Fevil.js
 {% endhighlight %}
 
-<img src="http://ww4.sinaimg.cn/large/7184df6bgw1f7otuv4e5hg20sb0k6x6p.gif">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/7184df6bgw1f7otuv4e5hg20sb0k6x6p.gif">

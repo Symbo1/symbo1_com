@@ -43,13 +43,13 @@ Chrome的force-cache: 浏览器在HTTP缓存中查找匹配的请求。
 
 force-cache和only-if-cached的差别在于，后者要求请求者和资源者需同源，否则会弹出如下错误:
 
-![1.png](https://i.loli.net/2020/03/06/4mKsLNHnIYAz6OE.png)
+![1.png](https://statics.symbo1.com/file/symbo1/article-images/4mKsLNHnIYAz6OE.png)
 
 所以在Chrome的force-cache下，攻击者可以通过读取用户在浏览器的缓存来获取敏感信息。
 
 Chrome开发团队认为缓存就是这样的工作机制，他们不会对这个问题进行修复，而是要求开发者使用"Vary"头部或者用户使用"--enable-features=SplitCacheByNetworkIsolationKey"启动浏览器:
 
-![2.png](https://i.loli.net/2020/03/06/zbLrBYnq2DJlVk5.png)
+![2.png](https://statics.symbo1.com/file/symbo1/article-images/zbLrBYnq2DJlVk5.png)
 
 火狐浏览器在上述场景中则不会返回敏感信息。
 
@@ -81,45 +81,45 @@ http://192.168.31.154:8010/index.php?type=2 对应 (2)
 http://192.168.31.154:8010/index.php?type=3 对应 (3)
 {% endhighlight %}
 
-![3.png](https://i.loli.net/2020/03/06/pKD31LuNCgx6EHa.png)
+![3.png](https://statics.symbo1.com/file/symbo1/article-images/pKD31LuNCgx6EHa.png)
 
 如图，输入admin/admin后会登录到用户账户，然后根据type=1跳转到/secret.php，type=2跳转到/secret2.php，type=3跳转到/secret3.php，都会输出登录用户的$_COOKIE['auth']到当前页面:
 
-![4.png](https://i.loli.net/2020/03/06/WDoX2LZcrE7U86p.png)
+![4.png](https://statics.symbo1.com/file/symbo1/article-images/WDoX2LZcrE7U86p.png)
 
-![5.png](https://i.loli.net/2020/03/06/Non1BGvFRVp9lIb.png)
+![5.png](https://statics.symbo1.com/file/symbo1/article-images/Non1BGvFRVp9lIb.png)
 
-![6.png](https://i.loli.net/2020/03/06/viq9mEYFaWtweG6.png)
+![6.png](https://statics.symbo1.com/file/symbo1/article-images/viq9mEYFaWtweG6.png)
 
 另外一个网站 http://192.168.31.154:8001/ 用来模拟攻击者网站/poc.html负责读取用户的secret值，如果能通过跨域读取到该值，则输出到RESULT框中:
 
-![7.png](https://i.loli.net/2020/03/06/PxQYmWSJEzOpCcH.png)
+![7.png](https://statics.symbo1.com/file/symbo1/article-images/PxQYmWSJEzOpCcH.png)
 
 测试正式开始！
 
 [1] 先访问 http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret值:
 
-![8.png](https://i.loli.net/2020/03/06/sUwx5PH4qzemSKG.png)
+![8.png](https://statics.symbo1.com/file/symbo1/article-images/sUwx5PH4qzemSKG.png)
 
 在1 (1) 模式下通过CORS配置问题+Chrome浏览器缓存读取secret值 ("Disable cache"默认关闭)，点击"Steal secret":
 
-![9.png](https://i.loli.net/2020/03/06/S6oQ3WEzYmcxHt9.png)
+![9.png](https://statics.symbo1.com/file/symbo1/article-images/S6oQ3WEzYmcxHt9.png)
 
 可以看到请求包不带cookie访问:
 
-![10.png](https://i.loli.net/2020/03/06/egwXZnU38bJjipT.png)
+![10.png](https://statics.symbo1.com/file/symbo1/article-images/egwXZnU38bJjipT.png)
 
 返回包如下:
 
-![11.png](https://i.loli.net/2020/03/06/esqoH7lgckDR2Tp.png)
+![11.png](https://statics.symbo1.com/file/symbo1/article-images/esqoH7lgckDR2Tp.png)
 
 成功跨域读取secret值并显示在RESULT中:
 
-![12.png](https://i.loli.net/2020/03/06/yZ7MSV5qDoEKRXB.png)
+![12.png](https://statics.symbo1.com/file/symbo1/article-images/yZ7MSV5qDoEKRXB.png)
 
 在Chrome中按Ctrl+Shift+i，在"Network"中勾选"Disable cache"禁止缓存功能:
 
-![13.png](https://i.loli.net/2020/03/06/517tDGpSqNcAHIW.png)
+![13.png](https://statics.symbo1.com/file/symbo1/article-images/517tDGpSqNcAHIW.png)
 
 刷新 http://192.168.31.154:8001/poc.html 重新点击"Steal secret"，无法读取到secret值。
 
@@ -127,51 +127,51 @@ http://192.168.31.154:8010/index.php?type=3 对应 (3)
 
 [2] 访问 http://192.168.31.154:8010/index.php?type=2 输入admin/admin跳转到 http://192.168.31.154:8010/secret2.php 能够正确输出secret值:
 
-![14.png](https://i.loli.net/2020/03/06/l5uafv8eop1iUst.png)
+![14.png](https://statics.symbo1.com/file/symbo1/article-images/l5uafv8eop1iUst.png)
 
 在1 (2)模式下通过常规CORS配置漏洞读取secret值，点击"Steal secret":
 
-![15.png](https://i.loli.net/2020/03/06/i9bHR16C5sGqJP4.png)
+![15.png](https://statics.symbo1.com/file/symbo1/article-images/i9bHR16C5sGqJP4.png)
 
 可以看到请求包带cookie访问:
 
-![16.png](https://i.loli.net/2020/03/06/zRFt62qeBXpxgaQ.png)
+![16.png](https://statics.symbo1.com/file/symbo1/article-images/zRFt62qeBXpxgaQ.png)
 
 返回包如下:
 
-![17.png](https://i.loli.net/2020/03/06/753pQYfzGdOFqBH.png)
+![17.png](https://statics.symbo1.com/file/symbo1/article-images/753pQYfzGdOFqBH.png)
 
 成功跨域读取secret值并显示在RESULT中:
 
-![18.png](https://i.loli.net/2020/03/06/XG2sxQSkumMLhda.png)
+![18.png](https://statics.symbo1.com/file/symbo1/article-images/XG2sxQSkumMLhda.png)
 
 这就是一个经典的CORS配置错误导致的跨域敏感信息读取。
 
 [3] 访问 http://192.168.31.154:8010/index.php?type=3 输入admin/admin跳转到 http://192.168.31.154:8010/secret3.php 能够正确输出secret:
 
-![19.png](https://i.loli.net/2020/03/06/78yXRzlnOEqHr5h.png)
+![19.png](https://statics.symbo1.com/file/symbo1/article-images/78yXRzlnOEqHr5h.png)
 
 在1 (3)模式下尝试通过CORS读取secret值，点击"Steal secret":
 
-![20.png](https://i.loli.net/2020/03/06/osNL8i4RxzdfmZK.png)
+![20.png](https://statics.symbo1.com/file/symbo1/article-images/osNL8i4RxzdfmZK.png)
 
 可以看到console的报错信息:
 
-![21.png](https://i.loli.net/2020/03/06/zS4TZmBoUNl6Ajf.png)
+![21.png](https://statics.symbo1.com/file/symbo1/article-images/zS4TZmBoUNl6Ajf.png)
 
 因为Access-Control-Allow-Credentials: false:
 
-![22.png](https://i.loli.net/2020/03/06/4OD6wa5qGi3SXKe.png)
+![22.png](https://statics.symbo1.com/file/symbo1/article-images/4OD6wa5qGi3SXKe.png)
 
 所以尝试读取secret值失败。
 
 [4] 在Firefox浏览器中先访问 http://192.168.31.154:8010/index.php?type=1 输入admin/admin跳转到 http://192.168.31.154:8010/secret.php 能够正确输出secret:
 
-![23.png](https://i.loli.net/2020/03/06/dBQlAS7sRxretf9.png)
+![23.png](https://statics.symbo1.com/file/symbo1/article-images/dBQlAS7sRxretf9.png)
 
 在2模式下尝试通过CORS配置问题+Firefox浏览器缓存读取secret值，点击"Steal secret":
 
-![24.png](https://i.loli.net/2020/03/06/sDPuiHAVQRJyXIq.png)
+![24.png](https://statics.symbo1.com/file/symbo1/article-images/sDPuiHAVQRJyXIq.png)
 
 http://192.168.31.154:8001/poc.html 的内容需要稍作修改:
 
@@ -182,19 +182,19 @@ const secret = htmlDoc.getElementsByName("secret").text
 
 可以看到请求包不带cookie访问:
 
-![25.png](https://i.loli.net/2020/03/06/lFK4ZQhUwsyOqBY.png)
+![25.png](https://statics.symbo1.com/file/symbo1/article-images/lFK4ZQhUwsyOqBY.png)
 
 返回包如下:
 
-![26.png](https://i.loli.net/2020/03/06/zqO2jLseSFGBgnk.png)
+![26.png](https://statics.symbo1.com/file/symbo1/article-images/zqO2jLseSFGBgnk.png)
 
 无法读取到secret的值:
 
-![27.png](https://i.loli.net/2020/03/06/DSGX3fuyLnNZFR8.png)
+![27.png](https://statics.symbo1.com/file/symbo1/article-images/DSGX3fuyLnNZFR8.png)
 
 如果在Firefox中通过1 (2) 的模式 (即经典CORS漏洞配置问题) 则能读取到secret的值:
 
-![28.png](https://i.loli.net/2020/03/06/aTLXf4BGekPQty5.png)
+![28.png](https://statics.symbo1.com/file/symbo1/article-images/aTLXf4BGekPQty5.png)
 
 ## 真实案例
 

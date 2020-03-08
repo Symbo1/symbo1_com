@@ -128,7 +128,7 @@ deploy$ tree
 
 6 - Wait for a while, and then you will see the DNS requests from your testing machine, which means the XML parser is trying to load external entities embedded in DTDs.
 
-<img src="https://i.loli.net/2019/01/26/5c4c5f19efd1c.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5c4c5f19efd1c.png">
 
 ## Mitigation
 

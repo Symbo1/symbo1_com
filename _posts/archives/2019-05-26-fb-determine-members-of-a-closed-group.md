@@ -8,7 +8,7 @@ categories: articles
 
 根据<https://www.facebook.com/help/220336891328465>所写，只有当前成员可以看到封闭小组的成员列表。
 
-<img src="https://i.loli.net/2019/05/26/5cea3d9654bb712978.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cea3d9654bb712978.png">
 
 ### 漏洞原因
 当我在测试Facebook小组功能的时候，发现了一个GraphQL API请求可以用来绕过这个隐私设置。大致的请求如下：
@@ -27,11 +27,11 @@ query_params = {"4":UserID,"11":GroupID}
 
 1) 当UserID是小组成员的时候，响应结果中的adder_profile字段会返回添加该用户的管理员信息。
 
-<img src="https://i.loli.net/2019/05/26/5cea3d9678da787645.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cea3d9678da787645.png">
 
 2) 当UserID不是该小组成员的时候，响应结果中的adder_profile字段会返回null。
 
-<img src="https://i.loli.net/2019/05/26/5cea3d9677e7c79227.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cea3d9677e7c79227.png">
 
 通过这个特征可以判断该用户是不是该封闭小组成员。
 
@@ -47,4 +47,4 @@ query_params = {"4":UserID,"11":GroupID}
 - 2019.05.18 Facebook修复漏洞
 - 2018.05.19 Facebook向我发放$5,000美金的赏金
 
-<img src="https://i.loli.net/2019/05/26/5cea3d963cfaa82431.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cea3d963cfaa82431.jpg">

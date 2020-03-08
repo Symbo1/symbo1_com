@@ -184,7 +184,7 @@ TransientKey=caEyM0dSVZC0xDhU
 
 然后这里延时了9秒。如图所示:
 
-<img src="https://i.loli.net/2018/11/30/5c01538e4cdf6.jpg">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5c01538e4cdf6.jpg">
 
 ## 结语
 

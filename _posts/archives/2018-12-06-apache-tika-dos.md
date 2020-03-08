@@ -198,7 +198,7 @@ python poc_dos_es.py [ES IP Address] [ES Port] ES_XML.xml [Thread Number]
 
 * Then, the CPU utilization will increase rapidly and obviously.
 
-<img src="http://avfisher.win/wp-content/uploads/2018/07/es_doc.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/es_doc.png">
 
 ## Conclusion
 

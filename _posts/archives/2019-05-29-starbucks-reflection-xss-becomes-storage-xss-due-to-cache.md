@@ -8,7 +8,7 @@ categories: articles
 
 漏洞点十分简单，输出是在`<script>`标签中，因为参数只对双引号做了转义出来，所以我们可以通过`</script>`进行逃逸绕过。
 
-<img src="https://i.loli.net/2019/05/29/5cee8ca68ecd810327.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cee8ca68ecd810327.png">
 
 但是当时测试的时候最麻烦的点有两个：
 
@@ -26,8 +26,8 @@ Waf绕过花了点时间，最终payload为：
 
 work on firefox：
 
-<img src="https://i.loli.net/2019/05/29/5cee8ca67f55997917.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cee8ca67f55997917.png">
 
 and work on chrome：
 
-<img src="https://i.loli.net/2019/05/29/5cee8ca68687410637.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5cee8ca68687410637.png">

@@ -21,7 +21,7 @@ I like asking myself some questions when hunting for bug bounty. Looking around 
 
 I registered two account and began my journey. WARNING: DO NOT TEST IN PRODUCTION USING TARGET ACCOUNT.
 
-<img src="https://ws1.sinaimg.cn/large/7184df6bgy1fxtifofrypj20gh0bq0tw.jpg">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/7184df6bgy1fxtifofrypj20gh0bq0tw.jpg">
 
 * Post `/urest/legacy/saveTemplate` with `profile=main%00` to get the path in server
 

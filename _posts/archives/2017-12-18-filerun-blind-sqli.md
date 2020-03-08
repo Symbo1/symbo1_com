@@ -48,7 +48,7 @@ I notice that the search parameter might be vulnerable to SQL Injection,I inject
 
 Use MySQL's delay function sleep () to testing.
 
-<img src="https://i.loli.net/2018/11/30/5c01504c70061.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5c01504c70061.png">
 
 {% highlight javascript %}
 'xor(sleep(5))or'
@@ -56,7 +56,7 @@ Use MySQL's delay function sleep () to testing.
 
 结果如下
 
-<img src="https://i.loli.net/2018/11/30/5c015098123ba.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5c015098123ba.png">
 
 然后使用Blind SQL注入技术来获取select user()数据验证脚本如下：
 
@@ -137,7 +137,7 @@ limit=50&search=aaa'xor(sleep(2))or'
 
 sleep() function is executed:
 
-<img src="https://i.loli.net/2018/11/30/5c0150d5f182e.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/5c0150d5f182e.png">
 
 ## timeline
 

@@ -60,7 +60,7 @@
 
 <p>   最开始是在本地发现的，在请求文件名中插入BOM头字符会直接返回后端的代码：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/03235511c2a5182171f420e55a9eef04fdd2ad02.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/03235511c2a5182171f420e55a9eef04fdd2ad02.png" /></p>
 
 <p>当时此漏洞的描述是：</p>
 
@@ -70,15 +70,15 @@
 
 <p>比如这些空的unicode字符序列都会被HFS+忽略：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/03235042f97be2f10da2075940c99257a272074d.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/03235042f97be2f10da2075940c99257a272074d.png" /></p>
 
 <p>再来看看Apple的<a target="_blank" href="https://support.apple.com/zh-cn/HT202694">公告</a>:</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/4fe.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/4fe.png" /></p>
 
 <p>   Apple对这个漏洞的定义只是绕过了HTTP基本认证，过于模棱两可。所以我把这个漏洞的标题定义为”Code To Disclose Vulnerability”。</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/0421155498fc6f652b4f0e6d44d51a3dabfe40ad.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/0421155498fc6f652b4f0e6d44d51a3dabfe40ad.png" /></p>
 
 <p>   这个漏洞的描述是说<code class="highlighter-rouge">mod_hfs_apple</code>模块没有正确处理掉这些unicode序列，这个模块的最初意义是用来处理URI请求信息的，比如文件名大小写等等事情，并且是用户自愿启不启用的。所以补丁就打在了<code class="highlighter-rouge">mod_hfs_apple</code>模块：</p>
 
@@ -141,7 +141,7 @@
 
 <p>   当URI中的filename存在这些字符序列时，则返回为这个请求是禁止的。更有意思的事情是，补丁虽然打了，但Apple还是没有将mod_hfs_apple模块设为默认加载，在虚拟机上安装了OS X Yosemite 10.10来看看。</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/01151244817cb1ad2440184c83afe16bba26039f.jpg" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/01151244817cb1ad2440184c83afe16bba26039f.jpg" /></p>
 
 <p>   直到去年有安全研究员提出了”osx apache没有默认加载mod_hfs_apple模块那么打补丁有什么意义？” CVE-2015-3675就这么诞生了2333。</p>
 
@@ -149,11 +149,11 @@
 
 <p>https://support.apple.com/zh-cn/HT204942</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/4444.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/4444.png" /></p>
 
 <p>修补的方式就是默认加载了。我本机是OSX EI Caption 10.11.6，自带的Apache默认加载了这个模块：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/6tt.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/6tt.png" /></p>
 
 <h2 id="漏洞蔓延">漏洞蔓延</h2>
 
@@ -161,15 +161,15 @@
 
 <p>MAMP &amp; MAMP Pro(2015-12-14):</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/011519390827084e57aa7c78373b8faef228197b.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/011519390827084e57aa7c78373b8faef228197b.png" /></p>
 
 <p>XAMPP(2016-04-21):</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/011523524d67e25007dfc50ca6557b29820cfa3f.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/011523524d67e25007dfc50ca6557b29820cfa3f.png" /></p>
 
 <p>AMPPS(2015-01-03):</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/011541228e7c5de5424f3967e04b1dbe1554c098.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/011541228e7c5de5424f3967e04b1dbe1554c098.png" /></p>
 
 <p>Payload：</p>
 
@@ -185,15 +185,15 @@
 
 <p>MAMP &amp; MAMP Pro：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/1.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/sadwewef1.png" /></p>
 
 <p>AMPPS：</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/2.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/asfwqdwqd2.png" /></p>
 
 <p>XAMPP:</p>
 
-<p><img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/3.png" /></p>
+<p><img src="https://statics.symbo1.com/file/symbo1/article-images/vdscsadas3.png" /></p>
 
 <h2 id="写在最后">写在最后</h2>
 

@@ -127,12 +127,12 @@ if __name__ == '__main__':
 
 @geekboy:
 
-<img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/579xovyz.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/579xovyz.png">
 
-<img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/575csqpv.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/575csqpv.png">
 
 @quora:
 
-<img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/378eahxk.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/378eahxk.png">
 
-<img src="https://blog-1252048719.cos.ap-shanghai.myqcloud.com/21uemnb.png">
+<img src="https://statics.symbo1.com/file/symbo1/article-images/21uemnb.png">
